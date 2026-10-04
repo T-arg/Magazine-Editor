@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Magazine Editor v0.1.0</title>
+<title>Magazine Editor v0.2.0</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -41,6 +41,10 @@
   .block { position:absolute; z-index:2; min-width:8px; min-height:8px; border:1px dashed transparent; }
   .block.selected { border-color:#4a3b3a; outline:1px solid rgba(244,211,94,.9); }
   .block .txt { width:100%; height:100%; overflow:hidden; white-space:pre-wrap; word-break:break-word; }
+  .grid { position:absolute; inset:0; z-index:1; pointer-events:none; }
+  .rt { min-height:260px; max-height:420px; overflow:auto; background:#fff; color:#333; border:1px solid #4a3b3a; padding:10px; line-height:1.35; }
+  .rt:focus { outline:2px solid #f4d35e; }
+  .rt-tools button { background:#fff; color:#333; min-width:28px; font-weight:700; }
   .block img.pic { width:100%; height:100%; display:block; pointer-events:none; }
   .handle { position:absolute; width:8px; height:8px; background:#fefefd; border:1px solid #4a3b3a; right:-4px; bottom:-4px; cursor:nwse-resize; z-index:3; }
   textarea.editor { width:100%; min-height:88px; background:#fff; color:#333; font:12px/1.4 "Segoe UI", sans-serif; border:1px solid #4a3b3a; padding:8px; }
@@ -60,7 +64,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.1.0</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.0</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -97,6 +101,10 @@
       </select>
     </div>
     <div class="row"><label></label><label class="hint"><input id="showFolio" type="checkbox" checked> page numbers</label></div>
+    <h2>Grid</h2>
+    <div class="row"><label>Size mm</label><input id="gridMm" type="number" min="1" max="40" step="1" value="5" style="width:72px"></div>
+    <div class="row"><label></label><label class="hint"><input id="showGrid" type="checkbox" checked> show grid while editing</label></div>
+    <p class="hint">Text blocks snap to this grid. The grid is not printed in PDF or EPUB.</p>
     <h2>Pages</h2>
     <div class="row">
       <button id="btnUp" type="button" class="ghost">Up</button>
@@ -157,7 +165,7 @@ let mag = blankMag();
 let selPage = 0;
 let selBlock = null;
 let zoom = 0.8;
-function blankMag() { return { version:1, name:"Untitled Magazine", issue:"Issue 01", date:"October 2026", size:"A4", showFolio:true, pages:[] }; }
+function blankMag() { return { version:1, name:"Untitled Magazine", issue:"Issue 01", date:"October 2026", size:"A4", showFolio:true, gridMm:5, showGrid:true, pages:[] }; }
 function pageSize() { return SIZES[mag.size] || SIZES.A4; }
 function setStatus(t, ok) { const el = document.getElementById("status"); el.textContent = t || ""; el.className = "status" + (ok ? " ok" : ""); }
 function slug(s) { return (s || "magazine").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") || "magazine"; }
@@ -176,7 +184,8 @@ function newPage(kind) {
   return p;
 }
 function textBlock(x, y, w, h, text, size, color, index, font) {
-  return { id:id(), type:"text", x, y, w, h, text, size, color, align:"left", weight:index ? 700 : 400, italic:false, bg:"transparent", font:font || "Segoe UI", index:!!index, pad:0 };
+  const htmlText = String(text || "").split("\n").join("<br>");
+  return { id:id(), type:"text", x, y, w, h, text, html:htmlText, size, color, align:"left", weight:index ? 700 : 400, italic:false, bg:"transparent", font:font || "Segoe UI", index:!!index, pad:0 };
 }
 function imageBlock(src) { return { id:id(), type:"image", x:10, y:10, w:40, h:30, src, fit:"cover", crop:{l:0,t:0,r:0,b:0}, radius:0, shadow:true }; }
 function seed() { mag.pages = [newPage("cover"), newPage("index"), newPage("article")]; mag.pages[2].blocks[0].index = true; rebuildIndex(false); }
@@ -188,6 +197,8 @@ function bindMeta() {
   document.getElementById("magDate").value = mag.date || "";
   document.getElementById("magSize").value = mag.size || "A4";
   document.getElementById("showFolio").checked = mag.showFolio !== false;
+  document.getElementById("gridMm").value = mag.gridMm || 5;
+  document.getElementById("showGrid").checked = mag.showGrid !== false;
 }
 function readMeta() {
   mag.name = document.getElementById("magName").value;
@@ -195,6 +206,8 @@ function readMeta() {
   mag.date = document.getElementById("magDate").value;
   mag.size = document.getElementById("magSize").value;
   mag.showFolio = document.getElementById("showFolio").checked;
+  mag.gridMm = Math.max(1, +document.getElementById("gridMm").value || 5);
+  mag.showGrid = document.getElementById("showGrid").checked;
 }
 function renderList() {
   const box = document.getElementById("pageList");
@@ -227,6 +240,15 @@ function renderSheet() {
   sheet.style.height = (pxW * sz.h / sz.w) + "px";
   sheet.style.background = p.bg || "#fff";
   if (p.bgImage) { sheet.style.backgroundImage = "url(" + p.bgImage + ")"; sheet.style.backgroundSize = "cover"; sheet.style.backgroundPosition = "center"; }
+  if (mag.showGrid !== false) {
+    const g = document.createElement("div");
+    g.className = "grid";
+    const gx = ((mag.gridMm || 5) / sz.w) * 100;
+    const gy = ((mag.gridMm || 5) / sz.h) * 100;
+    g.style.backgroundImage = "linear-gradient(to right, rgba(74,59,58,.22) 1px, transparent 1px), linear-gradient(to bottom, rgba(74,59,58,.22) 1px, transparent 1px)";
+    g.style.backgroundSize = gx + "% " + gy + "%";
+    sheet.appendChild(g);
+  }
   (p.blocks || []).forEach(b => sheet.appendChild(renderBlock(b)));
   if (mag.showFolio) {
     const f = document.createElement("div");
@@ -266,7 +288,7 @@ function renderBlock(b) {
     el.appendChild(img);
   } else {
     const t = document.createElement("div");
-    t.className = "txt"; t.textContent = b.text || "";
+    t.className = "txt"; t.innerHTML = blockHtml(b);
     t.style.fontFamily = ((b.font || "").indexOf("Playfair") >= 0 || b.font === "Georgia") ? "Georgia, serif" : "Segoe UI, sans-serif";
     t.style.fontSize = (b.size || 16) + "px"; t.style.color = b.color || "#333"; t.style.textAlign = b.align || "left";
     t.style.fontWeight = b.weight || 400; t.style.lineHeight = "1.25";
@@ -283,24 +305,67 @@ function renderBlock(b) {
   el.addEventListener("dblclick", e => {
     if (b.type !== "text") return;
     e.stopPropagation();
-    const next = prompt("Edit text", b.text || "");
-    if (next != null) { b.text = next; render(); autosave(); }
+    selBlock = b.id;
+    renderInspector();
+    const ed = document.getElementById("tx");
+    if (ed) ed.focus();
   });
   return el;
+}
+function snap(v, axis) {
+  if (!v && v !== 0) return v;
+  const sz = pageSize();
+  const step = ((mag.gridMm || 5) / (axis === "x" ? sz.w : sz.h)) * 100;
+  if (!step) return v;
+  return Math.round(v / step) * step;
 }
 function dragMove(e, b, el) {
   const rect = el.parentElement.getBoundingClientRect();
   const sx = e.clientX, sy = e.clientY, ox = b.x, oy = b.y;
-  const move = ev => { b.x = clamp(ox + (ev.clientX - sx) / rect.width * 100, 0, 100 - b.w); b.y = clamp(oy + (ev.clientY - sy) / rect.height * 100, 0, 100 - b.h); el.style.left = b.x + "%"; el.style.top = b.y + "%"; };
+  const text = b.type === "text";
+  const move = ev => {
+    let x = clamp(ox + (ev.clientX - sx) / rect.width * 100, 0, 100 - b.w);
+    let y = clamp(oy + (ev.clientY - sy) / rect.height * 100, 0, 100 - b.h);
+    if (text) { x = clamp(snap(x, "x"), 0, 100 - b.w); y = clamp(snap(y, "y"), 0, 100 - b.h); }
+    b.x = x; b.y = y; el.style.left = b.x + "%"; el.style.top = b.y + "%";
+  };
   const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
 }
 function dragResize(e, b, el) {
   const rect = el.parentElement.getBoundingClientRect();
   const sx = e.clientX, sy = e.clientY, ow = b.w, oh = b.h;
-  const move = ev => { b.w = clamp(ow + (ev.clientX - sx) / rect.width * 100, 4, 100 - b.x); b.h = clamp(oh + (ev.clientY - sy) / rect.height * 100, 3, 100 - b.y); el.style.width = b.w + "%"; el.style.height = b.h + "%"; };
+  const text = b.type === "text";
+  const move = ev => {
+    let w = clamp(ow + (ev.clientX - sx) / rect.width * 100, 4, 100 - b.x);
+    let h = clamp(oh + (ev.clientY - sy) / rect.height * 100, 3, 100 - b.y);
+    if (text) { w = clamp(snap(w, "x"), 4, 100 - b.x); h = clamp(snap(h, "y"), 3, 100 - b.y); }
+    b.w = w; b.h = h; el.style.width = b.w + "%"; el.style.height = b.h + "%";
+  };
   const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
+}
+function sanitizeHtml(raw) {
+  const allow = { B:1, STRONG:1, I:1, EM:1, U:1, S:1, STRIKE:1, BR:1, P:1, DIV:1, UL:1, OL:1, LI:1, SPAN:1 };
+  const src = document.createElement("div");
+  src.innerHTML = raw || "";
+  const out = document.createElement("div");
+  const walk = (node, parent) => {
+    node.childNodes.forEach(child => {
+      if (child.nodeType === 3) parent.appendChild(document.createTextNode(child.textContent));
+      else if (child.nodeType === 1 && allow[child.tagName]) {
+        const el = document.createElement(child.tagName.toLowerCase());
+        parent.appendChild(el);
+        if (child.tagName !== "BR") walk(child, el);
+      } else walk(child, parent);
+    });
+  };
+  walk(src, out);
+  return out.innerHTML;
+}
+function blockHtml(b) {
+  if (b.html) return sanitizeHtml(b.html);
+  return escapeHtml(b.text || "").split("\n").join("<br>");
 }
 function clamp(n, a, c) { return Math.max(a, Math.min(c, n)); }
 function selected() { const p = currentPage(); if (!p) return null; return (p.blocks || []).find(b => b.id === selBlock) || null; }
@@ -318,12 +383,38 @@ function renderInspector() {
     const apply = () => { const sz2 = pageSize(); b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100); b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100); b.fit = box.querySelector("#fit").value; b.crop = { l:+box.querySelector("#cL").value, t:+box.querySelector("#cT").value, r:+box.querySelector("#cR").value, b:+box.querySelector("#cB").value }; renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
   } else {
-    box.innerHTML = "<textarea id=\"tx\" class=\"editor\"></textarea><div class=\"row\"><label>Size</label><input id=\"fs\" type=\"number\" min=\"8\" max=\"120\" value=\"" + (b.size||16) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"mmW\" type=\"number\" step=\"0.5\" value=\"" + mmW + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"mmH\" type=\"number\" step=\"0.5\" value=\"" + mmH + "\"></div><div class=\"row\"><label>Color</label><input id=\"col\" type=\"color\" value=\"" + toHex(b.color) + "\"></div><div class=\"row\"><label>Font</label><select id=\"font\"><option>Georgia</option><option>Segoe UI</option></select></div><div class=\"row\"><label>Align</label><select id=\"al\"><option>left</option><option>center</option><option>right</option></select></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"idx\" type=\"checkbox\"" + (b.index ? " checked" : "") + "> Index title</label></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
-    box.querySelector("#tx").value = b.text || "";
+    box.innerHTML = "<div class=\"rt-tools row\"><button type=\"button\" data-cmd=\"bold\"><b>B</b></button><button type=\"button\" data-cmd=\"italic\"><i>I</i></button><button type=\"button\" data-cmd=\"underline\"><u>U</u></button><button type=\"button\" data-cmd=\"strikeThrough\"><s>S</s></button><button type=\"button\" data-cmd=\"insertUnorderedList\">List</button><button type=\"button\" data-cmd=\"insertOrderedList\">1.</button><button type=\"button\" data-cmd=\"removeFormat\">Clear</button></div><div id=\"tx\" class=\"rt\" contenteditable=\"true\"></div><div class=\"row\"><label>Size</label><input id=\"fs\" type=\"number\" min=\"8\" max=\"120\" value=\"" + (b.size||16) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"mmW\" type=\"number\" step=\"0.5\" value=\"" + mmW + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"mmH\" type=\"number\" step=\"0.5\" value=\"" + mmH + "\"></div><div class=\"row\"><label>Color</label><input id=\"col\" type=\"color\" value=\"" + toHex(b.color) + "\"></div><div class=\"row\"><label>Font</label><select id=\"font\"><option>Georgia</option><option>Segoe UI</option></select></div><div class=\"row\"><label>Align</label><select id=\"al\"><option>left</option><option>center</option><option>right</option></select></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"idx\" type=\"checkbox\"" + (b.index ? " checked" : "") + "> Index title</label></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    const ed = box.querySelector("#tx");
+    ed.innerHTML = blockHtml(b);
+    ed.style.fontSize = (b.size || 16) + "px";
+    ed.style.textAlign = b.align || "left";
+    ed.style.fontFamily = ((b.font || "").indexOf("Georgia") >= 0 || (b.font || "").indexOf("Playfair") >= 0) ? "Georgia, serif" : "Segoe UI, sans-serif";
     box.querySelector("#font").value = (b.font === "Playfair Display" || b.font === "Georgia") ? "Georgia" : "Segoe UI";
     box.querySelector("#al").value = b.align || "left";
-    const apply = () => { const sz2 = pageSize(); b.text = box.querySelector("#tx").value; b.size = +box.querySelector("#fs").value; b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100); b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100); b.color = box.querySelector("#col").value; b.font = box.querySelector("#font").value; b.align = box.querySelector("#al").value; b.index = box.querySelector("#idx").checked; b.weight = b.index ? 700 : 400; renderSheet(); renderList(); autosave(); };
-    box.querySelectorAll("input,select,textarea").forEach(n => n.addEventListener("input", apply));
+    box.querySelectorAll("[data-cmd]").forEach(btn => {
+      btn.addEventListener("mousedown", ev => ev.preventDefault());
+      btn.addEventListener("click", () => { ed.focus(); document.execCommand(btn.getAttribute("data-cmd"), false, null); apply(); });
+    });
+    const apply = () => {
+      const sz2 = pageSize();
+      b.html = sanitizeHtml(ed.innerHTML);
+      b.text = ed.innerText || "";
+      b.size = +box.querySelector("#fs").value;
+      const w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100);
+      const h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100);
+      b.w = snap(w, "x"); b.h = snap(h, "y");
+      b.color = box.querySelector("#col").value;
+      b.font = box.querySelector("#font").value;
+      b.align = box.querySelector("#al").value;
+      b.index = box.querySelector("#idx").checked;
+      b.weight = (b.index || /<(b|strong)\b/i.test(b.html || "")) ? 700 : 400;
+      b.italic = /<(i|em)\b/i.test(b.html || "");
+      ed.style.fontSize = b.size + "px";
+      ed.style.textAlign = b.align;
+      renderSheet(); renderList(); autosave();
+    };
+    box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
+    ed.addEventListener("input", apply);
   }
   box.querySelector("#delBlock").onclick = () => { const p = currentPage(); p.blocks = p.blocks.filter(x => x.id !== b.id); selBlock = null; render(); autosave(); };
 }
@@ -560,14 +651,17 @@ async function paintPage(p, pageIndex) {
       const font = (b.font || "").indexOf("Playfair") >= 0 || (b.font || "") === "Georgia" ? "Georgia" : "sans-serif";
       const size = Math.max(8, (b.size || 16) * (w / 794));
       ctx.fillStyle = b.color || "#222";
-      ctx.font = (b.weight >= 700 ? "700 " : "") + size + "px " + font;
       ctx.textBaseline = "top";
-      wrapLines(ctx, b.text || "", bw).forEach((line, i) => {
+      const plain = (b.text || "").replace(/\u00a0/g, " ");
+      ctx.font = (b.weight >= 700 ? "700 " : "") + (b.italic ? "italic " : "") + size + "px " + font;
+      wrapLines(ctx, plain, bw).forEach((line, i) => {
         if (i * size * 1.25 >= bh) return;
         let tx = x;
-        if (b.align === "center") tx = x + (bw - ctx.measureText(line).width) / 2;
-        if (b.align === "right") tx = x + bw - ctx.measureText(line).width;
+        const lw = ctx.measureText(line).width;
+        if (b.align === "center") tx = x + (bw - lw) / 2;
+        if (b.align === "right") tx = x + bw - lw;
         ctx.fillText(line, tx, y + i * size * 1.25);
+        if (b.html && /<u[ >]/i.test(b.html)) { ctx.fillRect(tx, y + i * size * 1.25 + size, lw, Math.max(1, size / 14)); }
       });
     }
   }
@@ -666,7 +760,7 @@ async function exportEpub() {
         return "<img alt=\"\" src=\"" + ref + "\" style=\"" + style + "object-fit:" + (b.fit || "cover") + ";clip-path:inset(" + (c.t || 0) + "% " + (c.r || 0) + "% " + (c.b || 0) + "% " + (c.l || 0) + "%)\"/>";
       }
       const anchor = b.index ? " id=\"t-" + b.id + "\"" : "";
-      return "<div" + anchor + " style=\"" + style + "font-family:Georgia,serif;font-size:" + (b.size || 16) + "px;color:" + (b.color || "#222") + ";text-align:" + (b.align || "left") + ";font-weight:" + (b.weight || 400) + ";white-space:pre-wrap;line-height:1.25\">" + xhtmlEscape(b.text || "") + "</div>";
+      return "<div" + anchor + " style=\"" + style + "font-family:Georgia,serif;font-size:" + (b.size || 16) + "px;color:" + (b.color || "#222") + ";text-align:" + (b.align || "left") + ";font-weight:" + (b.weight || 400) + ";line-height:1.25\">" + blockHtml(b) + "</div>";
     }).join("");
     let tocLinks = "";
     if (p.role === "index") {
@@ -696,6 +790,8 @@ document.getElementById("magIssue").addEventListener("input", () => { readMeta()
 document.getElementById("magDate").addEventListener("input", () => { readMeta(); autosave(); });
 document.getElementById("magSize").addEventListener("change", () => { readMeta(); render(); autosave(); });
 document.getElementById("showFolio").addEventListener("change", () => { readMeta(); render(); autosave(); });
+document.getElementById("gridMm").addEventListener("input", () => { readMeta(); render(); autosave(); });
+document.getElementById("showGrid").addEventListener("change", () => { readMeta(); render(); autosave(); });
 document.getElementById("pageLabel").addEventListener("input", e => { const p = currentPage(); if (p) { p.label = e.target.value; renderList(); autosave(); } });
 document.getElementById("pageBg").addEventListener("input", e => { const p = currentPage(); if (p) { p.bg = e.target.value; renderSheet(); autosave(); } });
 document.getElementById("zoom").addEventListener("input", e => { zoom = +e.target.value / 100; document.getElementById("zoomLabel").textContent = e.target.value + "%"; renderSheet(); });
