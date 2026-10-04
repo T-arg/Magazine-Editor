@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Magazine Editor v0.2.1</title>
+<title>Magazine Editor v0.2.2</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -51,6 +51,9 @@
   .textpop-bar button { background:#fefefd; color:#4a3b3a; }
   .textpop .rt { flex:1; min-height:0; max-height:none; border:0; border-top:1px solid #ddd; }
   .block img.pic { width:100%; height:100%; display:block; pointer-events:none; }
+  .block table { width:100%; height:100%; border-collapse:collapse; table-layout:fixed; }
+  .block td { padding:3px 4px; vertical-align:top; overflow:hidden; }
+  .block td.on { outline:2px solid #f4d35e; }
   .handle { position:absolute; width:8px; height:8px; background:#fefefd; border:1px solid #4a3b3a; right:-4px; bottom:-4px; cursor:nwse-resize; z-index:3; }
   textarea.editor { width:100%; min-height:88px; background:#fff; color:#333; font:12px/1.4 "Segoe UI", sans-serif; border:1px solid #4a3b3a; padding:8px; }
   .status { font-size:12px; color:var(--muted); min-height:16px; }
@@ -69,7 +72,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.1</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.2</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -144,6 +147,7 @@
       <button id="btnText" type="button">Text</button>
       <button id="btnTitle" type="button">Title</button>
       <button id="btnImage" type="button">Image</button>
+      <button id="btnTable" type="button">Table</button>
       <input id="fileImg" type="file" accept="image/*" hidden>
     </div>
     <h2>Selected block</h2>
@@ -154,7 +158,7 @@
 </div>
 <div id="textPop" class="textpop hidden">
   <div class="textpop-bar" id="textPopBar"><span>Text</span><button id="textPopClose" type="button">Close</button></div>
-  <div class="rt-tools row" id="textTools"><button type="button" data-cmd="bold"><b>B</b></button><button type="button" data-cmd="italic"><i>I</i></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="strikeThrough"><s>S</s></button><button type="button" data-cmd="insertUnorderedList">List</button><button type="button" data-cmd="insertOrderedList">1.</button><button type="button" data-cmd="removeFormat">Clear</button></div>
+  <div class="rt-tools row" id="textTools"><button type="button" data-cmd="bold"><b>B</b></button><button type="button" data-cmd="italic"><i>I</i></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="strikeThrough"><s>S</s></button><button type="button" data-cmd="insertUnorderedList">List</button><button type="button" data-cmd="insertOrderedList">1.</button><button type="button" data-cmd="removeFormat">Clear</button><button type="button" data-cmd="justifyLeft">Left</button><button type="button" data-cmd="justifyCenter">Middle</button><button type="button" data-cmd="justifyRight">Right</button><button type="button" data-cmd="justifyFull">Justify</button></div>
   <div id="tx" class="rt" contenteditable="true"></div>
 </div>
 <div id="cropModal" class="modal hidden">
@@ -198,6 +202,16 @@ function textBlock(x, y, w, h, text, size, color, index, font) {
   return { id:id(), type:"text", x, y, w, h, text, html:htmlText, size, color, align:"left", weight:index ? 700 : 400, italic:false, bg:"transparent", font:font || "Segoe UI", index:!!index, pad:0 };
 }
 function imageBlock(src) { return { id:id(), type:"image", x:10, y:10, w:40, h:30, src, fit:"cover", crop:{l:0,t:0,r:0,b:0}, radius:0, shadow:true }; }
+function tableBlock() {
+  const cell = () => ({ text:"", bg:"" });
+  const row = () => ({ bg:"", cells:[cell(), cell(), cell()] });
+  return { id:id(), type:"table", x:10, y:12, w:60, h:28, border:"#4a3b3a", borderWidth:1, bg:"#ffffff", colBg:["","",""], rows:[row(), row(), row()] };
+}
+function cellBg(b, r, c) {
+  const row = b.rows[r], cell = row.cells[c];
+  return cell.bg || (b.colBg && b.colBg[c]) || row.bg || b.bg || "transparent";
+}
+let tableSel = { r:0, c:0 };
 function seed() { mag.pages = [newPage("cover"), newPage("index"), newPage("article")]; mag.pages[2].blocks[0].index = true; rebuildIndex(false); }
 function autosave() { try { localStorage.setItem(AUTOSAVE, JSON.stringify(mag)); } catch (e) {} }
 function loadAutosave() { try { const raw = localStorage.getItem(AUTOSAVE); if (!raw) return false; mag = JSON.parse(raw); return Array.isArray(mag.pages); } catch (e) { return false; } }
@@ -296,11 +310,33 @@ function renderBlock(b) {
     const c = b.crop || { l:0, t:0, r:0, b:0 };
     img.style.clipPath = "inset(" + (c.t||0) + "% " + (c.r||0) + "% " + (c.b||0) + "% " + (c.l||0) + "%)";
     el.appendChild(img);
+  } else if (b.type === "table") {
+    const table = document.createElement("table");
+    table.style.background = b.bg || "transparent";
+    table.style.fontFamily = "Segoe UI, sans-serif";
+    table.style.fontSize = "13px";
+    table.style.color = "#333";
+    (b.rows || []).forEach((row, r) => {
+      const tr = document.createElement("tr");
+      (row.cells || []).forEach((cell, c) => {
+        const td = document.createElement("td");
+        td.textContent = cell.text || "";
+        td.style.background = cellBg(b, r, c);
+        td.style.border = (b.borderWidth || 1) + "px solid " + (b.border || "#4a3b3a");
+        if (selBlock === b.id && tableSel.r === r && tableSel.c === c) td.className = "on";
+        td.addEventListener("pointerdown", ev => { selBlock = b.id; tableSel = { r, c }; });
+        td.addEventListener("click", ev => { ev.stopPropagation(); selBlock = b.id; tableSel = { r, c }; renderInspector(); });
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+    el.appendChild(table);
   } else {
     const t = document.createElement("div");
     t.className = "txt"; t.innerHTML = blockHtml(b);
     t.style.fontFamily = ((b.font || "").indexOf("Playfair") >= 0 || b.font === "Georgia") ? "Georgia, serif" : "Segoe UI, sans-serif";
     t.style.fontSize = (b.size || 16) + "px"; t.style.color = b.color || "#333"; t.style.textAlign = b.align || "left";
+    if (b.align === "justify") t.style.textAlign = "justify";
     t.style.fontWeight = b.weight || 400; t.style.lineHeight = "1.25";
     el.appendChild(t);
   }
@@ -316,7 +352,7 @@ function renderBlock(b) {
     if (b.type !== "text") return;
     e.stopPropagation();
     selBlock = b.id;
-    renderInspector();
+    openTextEditor(b, true);
     const ed = document.getElementById("tx");
     if (ed) ed.focus();
   });
@@ -346,7 +382,7 @@ function dragMove(e, b, el) {
   const move = ev => {
     b.x = clamp(ox + (ev.clientX - sx) / rect.width * 100, 0, 100 - b.w);
     b.y = clamp(oy + (ev.clientY - sy) / rect.height * 100, 0, 100 - b.h);
-    if (b.type === "text" || b.type === "image") snapBlock(b);
+    if (b.type !== "cover") snapBlock(b);
     el.style.left = b.x + "%"; el.style.top = b.y + "%";
   };
   const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
@@ -360,7 +396,7 @@ function dragResize(e, b, el) {
     let w = clamp(ow + (ev.clientX - sx) / rect.width * 100, 4, 100 - b.x);
     let h = clamp(oh + (ev.clientY - sy) / rect.height * 100, 3, 100 - b.y);
     b.w = w; b.h = h;
-    if (b.type === "text" || b.type === "image") { b.w = clamp(snap(b.w, "x"), 4, 100 - b.x); b.h = clamp(snap(b.h, "y"), 3, 100 - b.y); snapBlock(b); }
+    b.w = clamp(snap(b.w, "x"), 4, 100 - b.x); b.h = clamp(snap(b.h, "y"), 3, 100 - b.y); snapBlock(b);
     el.style.left = b.x + "%"; el.style.top = b.y + "%"; el.style.width = b.w + "%"; el.style.height = b.h + "%";
   };
   const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
@@ -403,8 +439,8 @@ function renderInspector() {
     box.querySelector("#fit").value = b.fit || "cover";
     const apply = () => { const sz2 = pageSize(); b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100); b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100); b.fit = box.querySelector("#fit").value; b.crop = { l:+box.querySelector("#cL").value, t:+box.querySelector("#cT").value, r:+box.querySelector("#cR").value, b:+box.querySelector("#cB").value }; snapBlock(b); renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
-  } else {
-    box.innerHTML = "<div class=\"row\"><button id=\"openText\" type=\"button\">Edit text</button></div><div class=\"row\"><label>Size</label><input id=\"fs\" type=\"number\" min=\"8\" max=\"120\" value=\"" + (b.size||16) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"mmW\" type=\"number\" step=\"0.5\" value=\"" + mmW + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"mmH\" type=\"number\" step=\"0.5\" value=\"" + mmH + "\"></div><div class=\"row\"><label>Color</label><input id=\"col\" type=\"color\" value=\"" + toHex(b.color) + "\"></div><div class=\"row\"><label>Font</label><select id=\"font\"><option>Georgia</option><option>Segoe UI</option></select></div><div class=\"row\"><label>Align</label><select id=\"al\"><option>left</option><option>center</option><option>right</option></select></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"idx\" type=\"checkbox\"" + (b.index ? " checked" : "") + "> Index title</label></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+  } else if (b.type !== "table") {
+    box.innerHTML = "<p class=\"hint\">Double-click the block to open the text editor.</p><div class=\"row\"><label>Size</label><input id=\"fs\" type=\"number\" min=\"8\" max=\"120\" value=\"" + (b.size||16) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"mmW\" type=\"number\" step=\"0.5\" value=\"" + mmW + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"mmH\" type=\"number\" step=\"0.5\" value=\"" + mmH + "\"></div><div class=\"row\"><label>Color</label><input id=\"col\" type=\"color\" value=\"" + toHex(b.color) + "\"></div><div class=\"row\"><label>Font</label><select id=\"font\"><option>Georgia</option><option>Segoe UI</option></select></div><div class=\"row\"><label>Align</label><select id=\"al\"><option>left</option><option>center</option><option>right</option></select></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"idx\" type=\"checkbox\"" + (b.index ? " checked" : "") + "> Index title</label></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
     box.querySelector("#font").value = (b.font === "Playfair Display" || b.font === "Georgia") ? "Georgia" : "Segoe UI";
     box.querySelector("#al").value = b.align || "left";
     const ed = document.getElementById("tx");
@@ -429,8 +465,28 @@ function renderInspector() {
       renderSheet(); renderList(); autosave();
     };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
-    box.querySelector("#openText").onclick = () => openTextEditor(b, true);
-    openTextEditor(b, false);
+  } else {
+    const r = Math.min(tableSel.r || 0, b.rows.length - 1);
+    const c = Math.min(tableSel.c || 0, b.rows[0].cells.length - 1);
+    tableSel = { r, c };
+    box.innerHTML = "<div class=\"row\"><button id=\"addRow\" type=\"button\" class=\"ghost\">Add row</button><button id=\"delRow\" type=\"button\" class=\"ghost\">Delete row</button><button id=\"addCol\" type=\"button\" class=\"ghost\">Add column</button><button id=\"delCol\" type=\"button\" class=\"ghost\">Delete column</button></div><div class=\"row\"><label>Border</label><input id=\"tbBorder\" type=\"color\" value=\"" + toHex(b.border) + "\"><input id=\"tbW\" type=\"number\" min=\"0\" max=\"8\" value=\"" + (b.borderWidth || 1) + "\" style=\"width:56px\"></div><div class=\"row\"><label>Apply bg</label><select id=\"tbTarget\"><option value=\"table\">Table</option><option value=\"row\">Row " + (r + 1) + "</option><option value=\"col\">Column " + (c + 1) + "</option><option value=\"cell\">Cell " + (r + 1) + "," + (c + 1) + "</option></select><input id=\"tbBg\" type=\"color\" value=\"" + toHex(cellBg(b, r, c)) + "\"></div><div class=\"row\"><label>Cell text</label><input id=\"tbText\" type=\"text\" style=\"flex:1\" value=\"" + escapeHtml(b.rows[r].cells[c].text || "") + "\"></div><p class=\"hint\">Click a cell on the page to select it. Background applies to the table, that row, that column, or that cell.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    const paint = () => { b.border = box.querySelector("#tbBorder").value; b.borderWidth = +box.querySelector("#tbW").value; renderSheet(); autosave(); };
+    box.querySelector("#tbBorder").oninput = paint;
+    box.querySelector("#tbW").oninput = paint;
+    box.querySelector("#tbBg").oninput = () => {
+      const target = box.querySelector("#tbTarget").value;
+      const color = box.querySelector("#tbBg").value;
+      if (target === "table") b.bg = color;
+      else if (target === "row") b.rows[r].bg = color;
+      else if (target === "col") b.colBg[c] = color;
+      else b.rows[r].cells[c].bg = color;
+      renderSheet(); autosave();
+    };
+    box.querySelector("#tbText").oninput = () => { b.rows[r].cells[c].text = box.querySelector("#tbText").value; renderSheet(); autosave(); };
+    box.querySelector("#addRow").onclick = () => { const n = b.rows[0].cells.length; b.rows.push({ bg:"", cells:Array.from({length:n}, () => ({ text:"", bg:"" })) }); tableSel.r = b.rows.length - 1; render(); autosave(); };
+    box.querySelector("#delRow").onclick = () => { if (b.rows.length < 2) return; b.rows.splice(r, 1); tableSel.r = Math.max(0, r - 1); render(); autosave(); };
+    box.querySelector("#addCol").onclick = () => { b.rows.forEach(row => row.cells.push({ text:"", bg:"" })); b.colBg.push(""); tableSel.c = b.rows[0].cells.length - 1; render(); autosave(); };
+    box.querySelector("#delCol").onclick = () => { if (b.rows[0].cells.length < 2) return; b.rows.forEach(row => row.cells.splice(c, 1)); b.colBg.splice(c, 1); tableSel.c = Math.max(0, c - 1); render(); autosave(); };
   }
   box.querySelector("#delBlock").onclick = () => { const p = currentPage(); p.blocks = p.blocks.filter(x => x.id !== b.id); selBlock = null; render(); autosave(); };
 }
@@ -672,6 +728,28 @@ async function paintPage(p, pageIndex) {
   }
   for (const b of (p.blocks || [])) {
     const x = b.x / 100 * w, y = b.y / 100 * h, bw = b.w / 100 * w, bh = b.h / 100 * h;
+    if (b.type === "table") {
+      const rows = b.rows || [];
+      const cols = rows[0] ? rows[0].cells.length : 1;
+      const rh = bh / Math.max(1, rows.length);
+      const cw = bw / Math.max(1, cols);
+      ctx.lineWidth = Math.max(1, b.borderWidth || 1);
+      ctx.strokeStyle = b.border || "#4a3b3a";
+      ctx.font = "13px sans-serif";
+      ctx.fillStyle = b.color || "#333";
+      ctx.textBaseline = "top";
+      rows.forEach((row, ri) => {
+        row.cells.forEach((cell, ci) => {
+          const cx = x + ci * cw, cy = y + ri * rh;
+          ctx.fillStyle = cellBg(b, ri, ci);
+          ctx.fillRect(cx, cy, cw, rh);
+          ctx.strokeRect(cx, cy, cw, rh);
+          ctx.fillStyle = "#333";
+          ctx.fillText(cell.text || "", cx + 4, cy + 4, cw - 8);
+        });
+      });
+      continue;
+    }
     if (b.type === "image" && b.src) {
       const img = await loadImage(b.src);
       if (!img) continue;
@@ -793,6 +871,10 @@ async function exportEpub() {
     const name = "page-" + String(i + 1).padStart(3, "0") + ".xhtml";
     const blocks = (p.blocks || []).map(b => {
       const style = "position:absolute;left:" + b.x + "%;top:" + b.y + "%;width:" + b.w + "%;height:" + b.h + "%;overflow:hidden;";
+      if (b.type === "table") {
+        const rows = (b.rows || []).map((row, ri) => "<tr>" + row.cells.map((cell, ci) => "<td style=\"border:" + (b.borderWidth || 1) + "px solid " + (b.border || "#4a3b3a") + ";background:" + cellBg(b, ri, ci) + ";padding:4px;vertical-align:top\">" + xhtmlEscape(cell.text || "") + "</td>").join("") + "</tr>").join("");
+        return "<table style=\"" + style + "border-collapse:collapse;background:" + (b.bg || "transparent") + ";font-size:13px\">" + rows + "</table>";
+      }
       if (b.type === "image") {
         const ref = takeImg(b.src);
         if (!ref) return "";
@@ -843,6 +925,7 @@ document.getElementById("btnDown").onclick = () => { if (selPage >= mag.pages.le
 document.getElementById("btnIndex").onclick = () => rebuildIndex(true);
 document.getElementById("btnText").onclick = () => { const p = currentPage(); if (!p) return; p.blocks.push(textBlock(12, 20, 60, 16, "New text", 16, "#333", false)); selBlock = p.blocks[p.blocks.length - 1].id; render(); autosave(); };
 document.getElementById("btnTitle").onclick = () => { const p = currentPage(); if (!p) return; const b = textBlock(8, 8, 84, 12, "Title", 34, "#2b211f", true, "Georgia"); p.blocks.push(b); selBlock = b.id; render(); autosave(); };
+document.getElementById("btnTable").onclick = () => { const p = currentPage(); if (!p) return; const b = tableBlock(); snapBlock(b); p.blocks.push(b); selBlock = b.id; tableSel = { r:0, c:0 }; render(); autosave(); };
 document.getElementById("btnImage").onclick = () => document.getElementById("fileImg").click();
 document.getElementById("fileImg").onchange = async e => { const file = e.target.files[0]; e.target.value = ""; if (!file) return; const p = currentPage(); if (!p) return; setStatus("Importing image..."); const src = await compressImage(file); const b = imageBlock(src); p.blocks.push(b); selBlock = b.id; render(); autosave(); setStatus("Image added. Trim with the sliders.", true); };
 
@@ -853,7 +936,16 @@ document.getElementById("textTools").querySelectorAll("[data-cmd]").forEach(btn 
   btn.addEventListener("click", () => {
     const ed = document.getElementById("tx");
     ed.focus();
-    document.execCommand(btn.getAttribute("data-cmd"), false, null);
+    const cmd = btn.getAttribute("data-cmd");
+    document.execCommand(cmd, false, null);
+    const b = selected();
+    if (b && b.type === "text") {
+      if (cmd === "justifyLeft") b.align = "left";
+      if (cmd === "justifyCenter") b.align = "center";
+      if (cmd === "justifyRight") b.align = "right";
+      if (cmd === "justifyFull") b.align = "justify";
+      ed.style.textAlign = b.align || "left";
+    }
     ed.dispatchEvent(new Event("input"));
   });
 });
