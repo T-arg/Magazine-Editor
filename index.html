@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magazine Editor v1.0.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fefefd; --panel: #f5f5f3; --ink: #333; --muted: #6b5f5e;
+    --accent: #4a3b3a; --warn: #c0392b; --door: #f4d35e; --exit: #c060ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 13px/1.45 "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--ink); height: 100vh; display: flex; flex-direction: column; }
+  header {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 8px 16px; background: #fefefd; border-bottom: 3px solid #4a3b3a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .site-logo { display: flex; align-items: center; flex-shrink: 0; }
+  .site-logo img { height: 48px; width: auto; display: block; }
+  header h1 { font-size: 16px; margin: 0; color: #4a3b3a; letter-spacing: .04em; white-space: nowrap; }
+  .bmc-slot { margin-left: auto; display: flex; align-items: center; }
+  .bmc-slot img { height: 40px; }
+  button, select, input, textarea {
+    background: #4a3b3a; color: #fefefd; border: 1px solid #4a3b3a;
+    padding: 4px 8px; border-radius: 3px; font: inherit;
+  }
+  button:hover { background: #2e2424; cursor: pointer; }
+  button.ghost { background: #fff; color: #333; }
+  button.warn { background: var(--warn); border-color: var(--warn); }
+  button:disabled { opacity: .45; cursor: default; }
+  input[type=text], input[type=number], select, textarea { background: #fff; color: #333; }
+  input[type=color] { padding: 0; width: 36px; height: 26px; background: #fff; }
+  input[type=range] { width: 120px; accent-color: #4a3b3a; }
+  .layout { display: grid; grid-template-columns: 248px 1fr 300px; flex: 1; min-height: 0; }
+  .panel { padding: 12px; overflow: auto; background: var(--panel); border-right: 1px solid #ddd; }
+  .panel.right { border-right: 0; border-left: 1px solid #ddd; }
+  .panel h2 { font-size: 13px; margin: 14px 0 8px; color: var(--accent); text-transform: uppercase; }
+  .row { display: flex; align-items: center; gap: 6px; margin: 4px 0; flex-wrap: wrap; }
+  .row label { min-width: 78px; color: var(--muted); }
+  .hint { color: var(--muted); font-size: 12px; }
+  .ok { color: #3d7a3d; }
+  .pagelist { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+  .pageitem {
+    display: flex; gap: 8px; align-items: center; padding: 6px; background: #fff;
+    border: 1px solid #ddd; border-radius: 3px; cursor: pointer;
+  }
+  .pageitem.active { border-color: #4a3b3a; box-shadow: inset 3px 0 0 #4a3b3a; }
+  .thumb {
+    width: 36px; height: 48px; background: #fff; border: 1px solid #ccc; flex-shrink: 0;
+    overflow: hidden; position: relative;
+  }
+  .thumb i { display: block; position: absolute; background: #4a3b3a; opacity: .35; }
+  .stage {
+    min-width: 0; overflow: auto; background:
+      radial-gradient(circle at 20% 0%, #fff, #eceae6 55%);
+    display: flex; flex-direction: column; align-items: center; padding: 16px 16px 28px;
+  }
+  .stagebar { width: 100%; display: flex; gap: 8px; align-items: center; margin-bottom: 10px; color: var(--muted); }
+  .sheet-wrap { position: relative; }
+  .sheet {
+    position: relative; background: #fff; overflow: hidden;
+    box-shadow: 0 16px 40px rgba(74,59,58,.22), 0 1px 0 rgba(255,255,255,.8) inset;
+    transform-origin: top center;
+  }
+  .sheet .sheen {
+    pointer-events: none; position: absolute; inset: 0; z-index: 5;
+    background: linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%);
+  }
+  .folio {
+    position: absolute; z-index: 4; left: 0; right: 0; bottom: 3.2%;
+    text-align: center; font: 600 10px "Source Sans 3", "Segoe UI", sans-serif;
+    letter-spacing: .18em; color: #6b5f5e; pointer-events: none;
+  }
+  .block {
+    position: absolute; z-index: 2; min-width: 8px; min-height: 8px;
+    border: 1px dashed transparent;
+  }
+  .block.selected { border-color: #4a3b3a; outline: 1px solid rgba(244,211,94,.9); }
+  .block .txt { width: 100%; height: 100%; overflow: hidden; white-space: pre-wrap; word-break: break-word; }
+  .block img.pic { width: 100%; height: 100%; display: block; pointer-events: none; }
+  .handle {
+    position: absolute; width: 8px; height: 8px; background: #fefefd; border: 1px solid #4a3b3a;
+    right: -4px; bottom: -4px; cursor: nwse-resize; z-index: 3;
+  }
+  textarea.editor {
+    width: 100%; min-height: 88px; background: #fff; color: #333;
+    font: 12px/1.4 "Segoe UI", sans-serif; border: 1px solid #4a3b3a; padding: 8px;
+  }
+  .status { font-size: 12px; color: var(--muted); min-height: 16px; }
+  .hidden { display: none !important; }
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .panel.right { border-left: 0; border-top: 1px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
+    <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
+  </a>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v1.0.0</span></h1>
+  <button id="btnAdd" type="button">Add page</button>
+  <button id="btnDup" type="button">Duplicate</button>
+  <button id="btnDel" type="button">Delete page</button>
+  <button id="btnSave" type="button">Save JSON</button>
+  <button id="btnZip" type="button">Save folder</button>
+  <button id="btnOpen" type="button">Open</button>
+  <input id="fileOpen" type="file" accept=".json,.mag.json,.zip,application/json" hidden>
+  <button id="btnPdf" type="button">Export PDF</button>
+  <button id="btnEpub" type="button">Export EPUB</button>
+  <div class="bmc-slot">
+    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="TEAMarg" data-color="#5d4c4b" data-emoji="☕" data-font="Cookie" data-text="Cool tool? Buy us a coffee" data-outline-color="#fefefd" data-font-color="#fefefd" data-coffee-color="#FFDD00"></script>
+  </div>
+</header>
+<div class="layout">
+  <aside class="panel">
+    <h2>Magazine</h2>
+    <div class="row"><label>Name</label><input id="magName" type="text" style="flex:1;min-width:120px"></div>
+    <div class="row"><label>Issue</label><input id="magIssue" type="text" style="flex:1"></div>
+    <div class="row"><label>Date</label><input id="magDate" type="text" style="flex:1"></div>
+    <div class="row"><label>Size</label>
+      <select id="magSize">
+        <option value="A4">A4 (210 × 297 mm)</option>
+        <option value="Letter">US Letter (8.5 × 11 in)</option>
+        <option value="A5">A5 (148 × 210 mm)</option>
+        <option value="A3">A3 (297 × 420 mm)</option>
+        <option value="Tabloid">Tabloid (11 × 17 in)</option>
+        <option value="Digest">Digest (5.5 × 8.5 in)</option>
+        <option value="Square">Square (210 × 210 mm)</option>
+      </select>
+    </div>
+    <div class="row"><label></label><label class="hint"><input id="showFolio" type="checkbox" checked> page numbers</label></div>
+    <h2>Pages</h2>
+    <div class="row">
+      <button id="btnUp" type="button" class="ghost">Up</button>
+      <button id="btnDown" type="button" class="ghost">Down</button>
+      <button id="btnIndex" type="button" class="ghost">Rebuild index</button>
+    </div>
+    <div id="pageList" class="pagelist"></div>
+    <p class="hint">Save format: one <b>.mag.json</b> file (text + images embedded) is the most reliable. “Save folder” downloads a zip named after the magazine, with <b>magazine.json</b> and an <b>images/</b> folder. Work is also autosaved in this browser.</p>
+    <p id="status" class="status"></p>
+  </aside>
+  <main class="stage">
+    <div class="stagebar">
+      <span>Zoom</span>
+      <input id="zoom" type="range" min="40" max="160" value="80">
+      <span id="zoomLabel">80%</span>
+      <span id="pageMeta" style="margin-left:auto"></span>
+    </div>
+    <div id="sheetWrap" class="sheet-wrap"></div>
+  </main>
+  <aside class="panel right">
+    <h2>Page</h2>
+    <div class="row"><label>Label</label><input id="pageLabel" type="text" style="flex:1"></div>
+    <div class="row"><label>Background</label><input id="pageBg" type="color" value="#ffffff"></div>
+    <div class="row">
+      <button id="btnBgImg" type="button" class="ghost">Page image</button>
+      <button id="btnBgClear" type="button" class="ghost">Clear</button>
+    </div>
+    <h2>Add block</h2>
+    <div class="row">
+      <button id="btnText" type="button">Text</button>
+      <button id="btnTitle" type="button">Title</button>
+      <button id="btnImage" type="button">Image</button>
+      <input id="fileImg" type="file" accept="image/*" hidden>
+    </div>
+    <h2>Selected block</h2>
+    <div id="inspector" class="hint">Select a block on the page.</div>
+    <h2>How the index works</h2>
+    <p class="hint">Tick “Index title” on a text block. Rebuild index writes a contents page with links to those pages. EPUB uses real internal links. PDF gets clickable page links plus the printed page numbers.</p>
+  </aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const SIZES = {
+  A4: { w: 210, h: 297 },
+  Letter: { w: 215.9, h: 279.4 },
+  A5: { w: 148, h: 210 },
+  A3: { w: 297, h: 420 },
+  Tabloid: { w: 279.4, h: 431.8 },
+  Digest: { w: 139.7, h: 215.9 },
+  Square: { w: 210, h: 210 }
+};
+const AUTOSAVE = "magazine-editor-v1";
+let uid = 1;
+const id = () => "b" + (uid++);
+let mag = blankMag();
+let selPage = 0;
+let selBlock = null;
+let zoom = 0.8;
+
+function blankMag() {
+  return {
+    version: 1,
+    name: "Untitled Magazine",
+    issue: "Issue 01",
+    date: "October 2026",
+    size: "A4",
+    showFolio: true,
+    pages: []
+  };
+}
+function pageSize() { return SIZES[mag.size] || SIZES.A4; }
+function setStatus(t, ok) {
+  const el = document.getElementById("status");
+  el.textContent = t || "";
+  el.className = "status" + (ok ? " ok" : "");
+}
+function slug(s) {
+  return (s || "magazine").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") || "magazine";
+}
+function newPage(kind) {
+  const p = { id: id(), label: "Page", role: "normal", bg: "#f7f4ef", bgImage: "", blocks: [] };
+  if (kind === "cover") {
+    p.label = "Cover"; p.bg = "#2b211f";
+    p.blocks.push(textBlock(8, 58, 84, 22, mag.name || "Magazine", 42, "#fefefd", true, "Playfair Display"));
+    p.blocks.push(textBlock(8, 80, 70, 8, (mag.issue || "") + "  ·  " + (mag.date || ""), 14, "#f4d35e", false, "Source Sans 3"));
+  } else if (kind === "article") {
+    p.label = "Article";
+    p.blocks.push(textBlock(8, 8, 84, 14, "Story title", 32, "#2b211f", true, "Playfair Display"));
+    p.blocks.push(textBlock(8, 24, 84, 48, "Write the story here. Drag this block to move it, drag the corner to resize, and tick Index title if it should appear in the contents.", 15, "#333", false, "Source Sans 3"));
+  } else if (kind === "index") {
+    p.label = "Contents"; p.role = "index"; p.bg = "#fbf8f3";
+  } else {
+    p.label = "Page " + (mag.pages.length + 1);
+  }
+  return p;
+}
+function textBlock(x, y, w, h, text, size, color, index, font) {
+  return {
+    id: id(), type: "text", x, y, w, h, text, size, color,
+    align: "left", weight: index ? 700 : 400, italic: false,
+    bg: "transparent", font: font || "Source Sans 3", index: !!index, pad: 0
+  };
+}
+function imageBlock(src) {
+  return {
+    id: id(), type: "image", x: 10, y: 10, w: 40, h: 30, src,
+    fit: "cover", crop: { l: 0, t: 0, r: 0, b: 0 }, radius: 0, shadow: true
+  };
+}
+function seed() {
+  mag.pages = [newPage("cover"), newPage("index"), newPage("article")];
+  mag.pages[2].blocks[0].index = true;
+  rebuildIndex(false);
+}
+
+function autosave() {
+  try { localStorage.setItem(AUTOSAVE, JSON.stringify(mag)); } catch (e) { /* quota */ }
+}
+function loadAutosave() {
+  try {
+    const raw = localStorage.getItem(AUTOSAVE);
+    if (!raw) return false;
+    mag = JSON.parse(raw);
+    return Array.isArray(mag.pages);
+  } catch (e) { return false; }
+}
+
+function bindMeta() {
+  document.getElementById("magName").value = mag.name || "";
+  document.getElementById("magIssue").value = mag.issue || "";
+  document.getElementById("magDate").value = mag.date || "";
+  document.getElementById("magSize").value = mag.size || "A4";
+  document.getElementById("showFolio").checked = mag.showFolio !== false;
+}
+function readMeta() {
+  mag.name = document.getElementById("magName").value;
+  mag.issue = document.getElementById("magIssue").value;
+  mag.date = document.getElementById("magDate").value;
+  mag.size = document.getElementById("magSize").value;
+  mag.showFolio = document.getElementById("showFolio").checked;
+}
+
+function renderList() {
+  const box = document.getElementById("pageList");
+  box.innerHTML = "";
+  mag.pages.forEach((p, i) => {
+    const el = document.createElement("div");
+    el.className = "pageitem" + (i === selPage ? " active" : "");
+    const titles = (p.blocks || []).filter(b => b.index).map(b => (b.text || "").split("\n")[0]).filter(Boolean);
+    el.innerHTML = `<div class="thumb" style="background:${p.bg || "#fff"}"></div><div><b>${i + 1}. ${escapeHtml(p.label || "Page")}</b><div class="hint">${p.role === "index" ? "Index" : (titles[0] || (p.blocks || []).length + " blocks")}</div></div>`;
+    el.onclick = () => { selPage = i; selBlock = null; render(); };
+    box.appendChild(el);
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&", "<": "<", ">": ">", '"': """ }[c]));
+}
+function currentPage() { return mag.pages[selPage]; }
+
+function renderSheet() {
+  const wrap = document.getElementById("sheetWrap");
+  wrap.innerHTML = "";
+  const p = currentPage();
+  const sz = pageSize();
+  document.getElementById("pageMeta").textContent = p ? `${p.label} · ${sz.w} × ${sz.h} mm` : "";
+  if (!p) return;
+  const sheet = document.createElement("div");
+  sheet.className = "sheet";
+  const pxW = sz.w * 3.2 * zoom;
+  sheet.style.width = pxW + "px";
+  sheet.style.height = (pxW * sz.h / sz.w) + "px";
+  sheet.style.background = p.bg || "#fff";
+  if (p.bgImage) {
+    sheet.style.backgroundImage = `url(${p.bgImage})`;
+    sheet.style.backgroundSize = "cover";
+    sheet.style.backgroundPosition = "center";
+  }
+  (p.blocks || []).forEach(b => sheet.appendChild(renderBlock(b, sheet)));
+  if (mag.showFolio && p.role !== "cover-hide") {
+    const f = document.createElement("div");
+    f.className = "folio";
+    f.textContent = String(selPage + 1).padStart(2, "0");
+    if (isDark(p.bg)) f.style.color = "rgba(254,254,253,.7)";
+    sheet.appendChild(f);
+  }
+  const sheen = document.createElement("div");
+  sheen.className = "sheen";
+  sheet.appendChild(sheen);
+  sheet.addEventListener("pointerdown", e => {
+    if (e.target === sheet || e.target.classList.contains("sheen") || e.target.classList.contains("folio")) {
+      selBlock = null; renderInspector(); document.querySelectorAll(".block").forEach(n => n.classList.remove("selected"));
+    }
+  });
+  wrap.appendChild(sheet);
+  document.getElementById("pageLabel").value = p.label || "";
+  document.getElementById("pageBg").value = toHex(p.bg || "#ffffff");
+}
+function isDark(hex) {
+  const h = toHex(hex || "#ffffff").slice(1);
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 < 140;
+}
+function toHex(c) {
+  if (!c) return "#ffffff";
+  if (c[0] === "#" && c.length === 7) return c;
+  return "#ffffff";
+}
+function renderBlock(b) {
+  const el = document.createElement("div");
+  el.className = "block" + (selBlock === b.id ? " selected" : "");
+  el.style.left = b.x + "%";
+  el.style.top = b.y + "%";
+  el.style.width = b.w + "%";
+  el.style.height = b.h + "%";
+  if (b.type === "image") {
+    const img = document.createElement("img");
+    img.className = "pic";
+    img.src = b.src || "";
+    img.style.objectFit = b.fit || "cover";
+    const c = b.crop || { l: 0, t: 0, r: 0, b: 0 };
+    img.style.clipPath = `inset(${c.t || 0}% ${c.r || 0}% ${c.b || 0}% ${c.l || 0}%)`;
+    img.style.borderRadius = (b.radius || 0) + "px";
+    if (b.shadow) img.style.filter = "drop-shadow(0 8px 16px rgba(0,0,0,.28))";
+    el.appendChild(img);
+  } else {
+    const t = document.createElement("div");
+    t.className = "txt";
+    t.textContent = b.text || "";
+    t.style.fontFamily = (b.font || "Source Sans 3") + ", Georgia, sans-serif";
+    t.style.fontSize = (b.size || 16) + "px";
+    t.style.color = b.color || "#333";
+    t.style.textAlign = b.align || "left";
+    t.style.fontWeight = b.weight || 400;
+    t.style.fontStyle = b.italic ? "italic" : "normal";
+    t.style.background = b.bg && b.bg !== "transparent" ? b.bg : "transparent";
+    t.style.padding = (b.pad || 0) + "px";
+    t.style.lineHeight = "1.25";
+    el.appendChild(t);
+  }
+  const handle = document.createElement("div");
+  handle.className = "handle";
+  el.appendChild(handle);
+  el.addEventListener("pointerdown", e => {
+    if (e.target === handle) return;
+    e.stopPropagation();
+    selBlock = b.id;
+    renderInspector();
+    document.querySelectorAll(".block").forEach(n => n.classList.remove("selected"));
+    el.classList.add("selected");
+    dragMove(e, b, el);
+  });
+  handle.addEventListener("pointerdown", e => {
+    e.stopPropagation();
+    selBlock = b.id;
+    dragResize(e, b, el);
+  });
+  el.addEventListener("dblclick", e => {
+    if (b.type !== "text") return;
+    e.stopPropagation();
+    const next = prompt("Edit text", b.text || "");
+    if (next != null) { b.text = next; render(); autosave(); }
+  });
+  return el;
+}
+function dragMove(e, b, el) {
+  const sheet = el.parentElement;
+  const rect = sheet.getBoundingClientRect();
+  const sx = e.clientX, sy = e.clientY, ox = b.x, oy = b.y;
+  const move = ev => {
+    b.x = clamp(ox + (ev.clientX - sx) / rect.width * 100, 0, 100 - b.w);
+    b.y = clamp(oy + (ev.clientY - sy) / rect.height * 100, 0, 100 - b.h);
+    el.style.left = b.x + "%"; el.style.top = b.y + "%";
+  };
+  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", up);
+}
+function dragResize(e, b, el) {
+  const sheet = el.parentElement;
+  const rect = sheet.getBoundingClientRect();
+  const sx = e.clientX, sy = e.clientY, ow = b.w, oh = b.h;
+  const move = ev => {
+    b.w = clamp(ow + (ev.clientX - sx) / rect.width * 100, 4, 100 - b.x);
+    b.h = clamp(oh + (ev.clientY - sy) / rect.height * 100, 3, 100 - b.y);
+    el.style.width = b.w + "%"; el.style.height = b.h + "%";
+  };
+  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", up);
+}
+function clamp(n, a, c) { return Math.max(a, Math.min(c, n)); }
+
+function selected() {
+  const p = currentPage();
+  if (!p) return null;
+  return (p.blocks || []).find(b => b.id === selBlock) || null;
+}
+function renderInspector() {
+  const box = document.getElementById("inspector");
+  const b = selected();
+  if (!b) { box.className = "hint"; box.textContent = "Select a block on the page. Double-click text to edit it."; return; }
+  box.className = "";
+  const sz = pageSize();
+  const mmW = (b.w / 100 * sz.w).toFixed(1);
+  const mmH = (b.h / 100 * sz.h).toFixed(1);
+  if (b.type === "image") {
+    const c = b.crop || (b.crop = { l: 0, t: 0, r: 0, b: 0 });
+    box.innerHTML = `
+      <div class="row"><label>Width mm</label><input id="mmW" type="number" step="0.5" value="${mmW}"></div>
+      <div class="row"><label>Height mm</label><input id="mmH" type="number" step="0.5" value="${mmH}"></div>
+      <div class="row"><label>Fit</label><select id="fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></div>
+      <div class="row"><label>Trim L</label><input id="cL" type="range" min="0" max="40" value="${c.l || 0}"></div>
+      <div class="row"><label>Trim T</label><input id="cT" type="range" min="0" max="40" value="${c.t || 0}"></div>
+      <div class="row"><label>Trim R</label><input id="cR" type="range" min="0" max="40" value="${c.r || 0}"></div>
+      <div class="row"><label>Trim B</label><input id="cB" type="range" min="0" max="40" value="${c.b || 0}"></div>
+      <div class="row"><label></label><label class="hint"><input id="sh" type="checkbox" ${b.shadow ? "checked" : ""}> glossy shadow</label></div>
+      <div class="row"><button id="delBlock" type="button" class="warn">Delete block</button></div>`;
+    box.querySelector("#fit").value = b.fit || "cover";
+    const apply = () => {
+      const sz2 = pageSize();
+      b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100);
+      b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100);
+      b.fit = box.querySelector("#fit").value;
+      b.crop = { l: +box.querySelector("#cL").value, t: +box.querySelector("#cT").value, r: +box.querySelector("#cR").value, b: +box.querySelector("#cB").value };
+      b.shadow = box.querySelector("#sh").checked;
+      renderSheet(); autosave();
+    };
+    box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
+  } else {
+    box.innerHTML = `
+      <textarea id="tx" class="editor">${escapeHtml(b.text || "")}</textarea>
+      <div class="row"><label>Size</label><input id="fs" type="number" min="8" max="120" value="${b.size || 16}"></div>
+      <div class="row"><label>Width mm</label><input id="mmW" type="number" step="0.5" value="${mmW}"></div>
+      <div class="row"><label>Height mm</label><input id="mmH" type="number" step="0.5" value="${mmH}"></div>
+      <div class="row"><label>Color</label><input id="col" type="color" value="${toHex(b.color)}"></div>
+      <div class="row"><label>Font</label><select id="font"><option>Playfair Display</option><option>Source Sans 3</option><option>Georgia</option><option>Segoe UI</option></select></div>
+      <div class="row"><label>Align</label><select id="al"><option>left</option><option>center</option><option>right</option></select></div>
+      <div class="row"><label></label><label class="hint"><input id="idx" type="checkbox" ${b.index ? "checked" : ""}> Index title</label></div>
+      <div class="row"><button id="delBlock" type="button" class="warn">Delete block</button></div>`;
+    box.querySelector("#font").value = b.font || "Source Sans 3";
+    box.querySelector("#al").value = b.align || "left";
+    const apply = () => {
+      const sz2 = pageSize();
+      b.text = box.querySelector("#tx").value;
+      b.size = +box.querySelector("#fs").value;
+      b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100);
+      b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100);
+      b.color = box.querySelector("#col").value;
+      b.font = box.querySelector("#font").value;
+      b.align = box.querySelector("#al").value;
+      b.index = box.querySelector("#idx").checked;
+      b.weight = b.index ? 700 : (b.weight || 400);
+      renderSheet(); renderList(); autosave();
+    };
+    box.querySelectorAll("input,select,textarea").forEach(n => n.addEventListener("input", apply));
+  }
+  box.querySelector("#delBlock").onclick = () => {
+    const p = currentPage();
+    p.blocks = p.blocks.filter(x => x.id !== b.id);
+    selBlock = null; render(); autosave();
+  };
+}
+function render() { readMeta(); renderList(); renderSheet(); renderInspector(); }
+
+function indexEntries() {
+  const out = [];
+  mag.pages.forEach((p, i) => {
+    if (p.role === "index") return;
+    (p.blocks || []).forEach(b => {
+      if (b.type === "text" && b.index) {
+        const title = (b.text || "").split("\n")[0].trim();
+        if (title) out.push({ title, page: i + 1, pageIndex: i });
+      }
+    });
+  });
+  return out;
+}
+function rebuildIndex(announce = true) {
+  let p = mag.pages.find(x => x.role === "index");
+  if (!p) {
+    p = newPage("index");
+    mag.pages.splice(Math.min(1, mag.pages.length), 0, p);
+  }
+  const entries = indexEntries();
+  const lines = entries.map(e => e.title + "  ·  " + String(e.page).padStart(2, "0")).join("\n") || "Mark text blocks as Index title, then rebuild.";
+  p.blocks = [
+    textBlock(8, 8, 84, 10, "Contents", 36, "#2b211f", false, "Playfair Display"),
+    textBlock(8, 22, 84, 68, lines, 16, "#333", false, "Source Sans 3")
+  ];
+  p.blocks[1].align = "left";
+  p.indexMap = entries;
+  if (announce) setStatus("Index rebuilt from titles.", true);
+  render(); autosave();
+}
+
+function download(name, blob) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function saveJson() {
+  readMeta();
+  const name = slug(mag.name) + ".mag.json";
+  download(name, new Blob([JSON.stringify(mag)], { type: "application/json" }));
+  setStatus("Saved " + name, true);
+}
+async function saveFolder() {
+  readMeta();
+  if (typeof JSZip === "undefined") { setStatus("JSZip failed to load."); return; }
+  const zip = new JSZip();
+  const folder = zip.folder(slug(mag.name));
+  const clone = JSON.parse(JSON.stringify(mag));
+  let n = 0;
+  const imgDir = folder.folder("images");
+  const walk = (obj) => {
+    if (!obj || typeof obj !== "object") return;
+    for (const k of Object.keys(obj)) {
+      const v = obj[k];
+      if (typeof v === "string" && v.startsWith("data:image")) {
+        n++;
+        const ext = v.includes("image/png") ? "png" : "jpg";
+        const file = "img-" + n + "." + ext;
+        imgDir.file(file, v.split(",")[1], { base64: true });
+        obj[k] = "images/" + file;
+      } else if (v && typeof v === "object") walk(v);
+    }
+  };
+  walk(clone);
+  folder.file("magazine.json", JSON.stringify(clone, null, 2));
+  const blob = await zip.generateAsync({ type: "blob" });
+  download(slug(mag.name) + ".zip", blob);
+  setStatus("Folder zip saved: " + slug(mag.name) + "/", true);
+}
+async function openFile(file) {
+  if (!file) return;
+  if (file.name.endsWith(".zip")) {
+    const zip = await JSZip.loadAsync(file);
+    let jsonName = Object.keys(zip.files).find(n => n.endsWith("magazine.json"));
+    if (!jsonName) { setStatus("No magazine.json in zip."); return; }
+    const data = JSON.parse(await zip.files[jsonName].async("string"));
+    const prefix = jsonName.slice(0, jsonName.lastIndexOf("/") + 1);
+    const restore = async (obj) => {
+      if (!obj || typeof obj !== "object") return;
+      for (const k of Object.keys(obj)) {
+        const v = obj[k];
+        if (typeof v === "string" && v.startsWith("images/")) {
+          const entry = zip.file(prefix + v) || zip.file(v);
+          if (entry) {
+            const b64 = await entry.async("base64");
+            const ext = v.endsWith(".png") ? "png" : "jpeg";
+            obj[k] = "data:image/" + ext + ";base64," + b64;
+          }
+        } else if (v && typeof v === "object") await restore(v);
+      }
+    };
+    await restore(data);
+    mag = data;
+  } else {
+    mag = JSON.parse(await file.text());
+  }
+  selPage = 0; selBlock = null;
+  bindMeta(); render(); autosave();
+  setStatus("Opened " + (mag.name || file.name), true);
+}
+
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 1800;
+        let w = img.width, h = img.height;
+        if (w > max || h > max) {
+          const s = max / Math.max(w, h);
+          w = Math.round(w * s); h = Math.round(h * s);
+        }
+        const c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL("image/jpeg", 0.88));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function exportNode(p, pageIndex) {
+  const sz = pageSize();
+  const node = document.createElement("div");
+  node.style.width = "794px";
+  node.style.height = (794 * sz.h / sz.w) + "px";
+  node.style.position = "relative";
+  node.style.background = p.bg || "#fff";
+  node.style.overflow = "hidden";
+  node.style.fontFamily = "Georgia, serif";
+  if (p.bgImage) {
+    node.style.backgroundImage = `url(${p.bgImage})`;
+    node.style.backgroundSize = "cover";
+    node.style.backgroundPosition = "center";
+  }
+  (p.blocks || []).forEach(b => {
+    const el = document.createElement("div");
+    el.style.position = "absolute";
+    el.style.left = b.x + "%"; el.style.top = b.y + "%";
+    el.style.width = b.w + "%"; el.style.height = b.h + "%";
+    el.style.overflow = "hidden";
+    if (b.type === "image" && b.src) {
+      const img = document.createElement("img");
+      img.src = b.src;
+      img.style.width = "100%"; img.style.height = "100%";
+      img.style.objectFit = b.fit || "cover";
+      const c = b.crop || {};
+      img.style.clipPath = `inset(${c.t || 0}% ${c.r || 0}% ${c.b || 0}% ${c.l || 0}%)`;
+      el.appendChild(img);
+    } else if (b.type === "text") {
+      el.textContent = b.text || "";
+      el.style.whiteSpace = "pre-wrap";
+      el.style.fontFamily = (b.font || "Georgia") + ", Georgia, sans-serif";
+      el.style.fontSize = Math.round((b.size || 16) * 1.35) + "px";
+      el.style.color = b.color || "#222";
+      el.style.textAlign = b.align || "left";
+      el.style.fontWeight = b.weight || 400;
+      el.style.lineHeight = "1.25";
+    }
+    node.appendChild(el);
+  });
+  if (mag.showFolio) {
+    const f = document.createElement("div");
+    f.textContent = String(pageIndex + 1).padStart(2, "0");
+    f.style.position = "absolute"; f.style.left = "0"; f.style.right = "0"; f.style.bottom = "3%";
+    f.style.textAlign = "center"; f.style.letterSpacing = ".18em";
+    f.style.font = "600 12px sans-serif";
+    f.style.color = isDark(p.bg) ? "rgba(255,255,255,.75)" : "#6b5f5e";
+    node.appendChild(f);
+  }
+  const sheen = document.createElement("div");
+  sheen.style.position = "absolute"; sheen.style.inset = "0";
+  sheen.style.background = "linear-gradient(118deg, rgba(255,255,255,.18), transparent 40%, rgba(255,255,255,.06) 55%, transparent 72%)";
+  node.appendChild(sheen);
+  return node;
+}
+async function exportPdf() {
+  readMeta();
+  if (!window.jspdf || !window.html2canvas) { setStatus("PDF libraries still loading."); return; }
+  setStatus("Building PDF…");
+  const sz = pageSize();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: [sz.w, sz.h], orientation: sz.w > sz.h ? "landscape" : "portrait" });
+  const host = document.createElement("div");
+  host.style.position = "fixed"; host.style.left = "-4000px"; host.style.top = "0";
+  document.body.appendChild(host);
+  for (let i = 0; i < mag.pages.length; i++) {
+    if (i) doc.addPage([sz.w, sz.h], sz.w > sz.h ? "landscape" : "portrait");
+    const node = exportNode(mag.pages[i], i);
+    host.appendChild(node);
+    const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: null });
+    const img = canvas.toDataURL("image/jpeg", 0.92);
+    doc.addImage(img, "JPEG", 0, 0, sz.w, sz.h);
+    host.removeChild(node);
+  }
+  const indexPage = mag.pages.findIndex(p => p.role === "index");
+  if (indexPage >= 0) {
+    const entries = indexEntries();
+    doc.setPage(indexPage + 1);
+    entries.forEach((e, n) => {
+      const y = 22 + 10 + n * 8;
+      doc.link(16, y, sz.w - 32, 7, { pageNumber: e.page });
+    });
+  }
+  document.body.removeChild(host);
+  doc.save(slug(mag.name) + ".pdf");
+  setStatus("PDF exported.", true);
+}
+function xhtmlEscape(s) {
+  return String(s).replace(/[&<>]/g, c => ({ "&": "&", "<": "<", ">": ">" }[c]));
+}
+async function exportEpub() {
+  readMeta();
+  if (typeof JSZip === "undefined") { setStatus("JSZip failed to load."); return; }
+  setStatus("Building EPUB…");
+  const sz = pageSize();
+  const pw = Math.round(sz.w * 96 / 25.4);
+  const ph = Math.round(sz.h * 96 / 25.4);
+  const zip = new JSZip();
+  zip.file("mimetype", "application/epub+zip", { compression: "STORE" });
+  zip.file("META-INF/container.xml", `<?xml version="1.0"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`);
+  const images = {};
+  let imgN = 0;
+  const takeImg = (src) => {
+    if (!src || !src.startsWith("data:image")) return "";
+    if (images[src]) return images[src];
+    imgN++;
+    const ext = src.includes("png") ? "png" : "jpg";
+    const name = "images/p" + imgN + "." + ext;
+    zip.file("OEBPS/" + name, src.split(",")[1], { base64: true });
+    images[src] = name;
+    return name;
+  };
+  const manifest = [];
+  const spine = [];
+  mag.pages.forEach((p, i) => {
+    const name = "page-" + String(i + 1).padStart(3, "0") + ".xhtml";
+    const blocks = (p.blocks || []).map(b => {
+      const style = `position:absolute;left:${b.x}%;top:${b.y}%;width:${b.w}%;height:${b.h}%;overflow:hidden;`;
+      if (b.type === "image") {
+        const ref = takeImg(b.src);
+        if (!ref) return "";
+        const c = b.crop || {};
+        return `<img alt="" src="${ref}" style="${style}object-fit:${b.fit || "cover"};clip-path:inset(${c.t || 0}% ${c.r || 0}% ${c.b || 0}% ${c.l || 0}%)"/>`;
+      }
+      const title = (b.text || "").split("\n")[0].trim();
+      const anchor = b.index ? ` id="t-${b.id}"` : "";
+      return `<div${anchor} style="${style}font-family:${b.font || "Georgia"},Georgia,serif;font-size:${b.size || 16}px;color:${b.color || "#222"};text-align:${b.align || "left"};font-weight:${b.weight || 400};white-space:pre-wrap;line-height:1.25">${xhtmlEscape(b.text || "")}</div>`;
+    }).join("");
+    let tocLinks = "";
+    if (p.role === "index") {
+      tocLinks = indexEntries().map(e => `<a href="page-${String(e.page).padStart(3, "0")}.xhtml" style="position:absolute;left:8%;width:84%;height:6%;top:${22 + (indexEntries().indexOf(e)) * 6}%">${xhtmlEscape(e.title)}</a>`).join("");
+    }
+    const bg = p.bgImage ? takeImg(p.bgImage) : "";
+    const doc = `<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head><title>${xhtmlEscape(p.label || "Page")}</title>
+<meta name="viewport" content="width=${pw}, height=${ph}"/>
+<style>
+body{margin:0;width:${pw}px;height:${ph}px;overflow:hidden;background:${p.bg || "#fff"};position:relative}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.folio{position:absolute;bottom:3%;left:0;right:0;text-align:center;letter-spacing:.18em;font:600 11px sans-serif;color:${isDark(p.bg) ? "#eee" : "#6b5f5e"}}
+</style></head>
+<body>
+${bg ? `<img class="bg" alt="" src="${bg}"/>` : ""}
+${blocks}
+${tocLinks}
+${mag.showFolio ? `<div class="folio">${String(i + 1).padStart(2, "0")}</div>` : ""}
+</body></html>`;
+    zip.file("OEBPS/" + name, doc);
+    manifest.push(`<item id="p${i + 1}" href="${name}" media-type="application/xhtml+xml"/>`);
+    spine.push(`<itemref idref="p${i + 1}"/>`);
+  });
+  Object.values(images).forEach((href, i) => {
+    const mt = href.endsWith(".png") ? "image/png" : "image/jpeg";
+    manifest.push(`<item id="img${i + 1}" href="${href}" media-type="${mt}"/>`);
+  });
+  const nav = `<?xml version="1.0" encoding="utf-8"?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"><head><title>Contents</title></head><body><nav epub:type="toc"><ol>${
+    indexEntries().map(e => `<li><a href="page-${String(e.page).padStart(3, "0")}.xhtml">${xhtmlEscape(e.title)}</a></li>`).join("") || mag.pages.map((p, i) => `<li><a href="page-${String(i + 1).padStart(3, "0")}.xhtml">${xhtmlEscape(p.label || "Page")}</a></li>`).join("")
+  }</ol></nav></body></html>`;
+  zip.file("OEBPS/nav.xhtml", nav);
+  manifest.push(`<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>`);
+  const opf = `<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uid" version="3.0" prefix="rendition: http://www.idpf.org/vocab/rendition/#">
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:identifier id="uid">${slug(mag.name)}-${Date.now()}</dc:identifier>
+<dc:title>${xhtmlEscape(mag.name || "Magazine")}</dc:title>
+<dc:language>en</dc:language>
+<dc:date>${xhtmlEscape(mag.date || "")}</dc:date>
+<meta property="dcterms:modified">${new Date().toISOString().replace(/\.\d+Z$/, "Z")}</meta>
+<meta property="rendition:layout">pre-paginated</meta>
+<meta property="rendition:orientation">portrait</meta>
+<meta property="rendition:spread">none</meta>
+</metadata>
+<manifest>${manifest.join("")}</manifest>
+<spine>${spine.join("")}</spine>
+</package>`;
+  zip.file("OEBPS/content.opf", opf);
+  const blob = await zip.generateAsync({ type: "blob", mimeType: "application/epub+zip" });
+  download(slug(mag.name) + ".epub", blob);
+  setStatus("EPUB exported (fixed layout).", true);
+}
+
+document.getElementById("magName").addEventListener("input", () => { readMeta(); autosave(); });
+document.getElementById("magIssue").addEventListener("input", () => { readMeta(); autosave(); });
+document.getElementById("magDate").addEventListener("input", () => { readMeta(); autosave(); });
+document.getElementById("magSize").addEventListener("change", () => { readMeta(); render(); autosave(); });
+document.getElementById("showFolio").addEventListener("change", () => { readMeta(); render(); autosave(); });
+document.getElementById("pageLabel").addEventListener("input", e => { const p = currentPage(); if (p) { p.label = e.target.value; renderList(); autosave(); } });
+document.getElementById("pageBg").addEventListener("input", e => { const p = currentPage(); if (p) { p.bg = e.target.value; renderSheet(); autosave(); } });
+document.getElementById("zoom").addEventListener("input", e => {
+  zoom = +e.target.value / 100;
+  document.getElementById("zoomLabel").textContent = e.target.value + "%";
+  renderSheet();
+});
+document.getElementById("btnAdd").onclick = () => {
+  const kind = prompt("Page type: blank, cover, article, index", "article") || "blank";
+  mag.pages.splice(selPage + 1, 0, newPage(kind.trim().toLowerCase()));
+  selPage = Math.min(selPage + 1, mag.pages.length - 1);
+  if (kind.trim().toLowerCase() === "index") rebuildIndex(false);
+  render(); autosave();
+};
+document.getElementById("btnDup").onclick = () => {
+  const p = currentPage(); if (!p) return;
+  const copy = JSON.parse(JSON.stringify(p));
+  copy.id = id(); copy.label = (p.label || "Page") + " copy";
+  (copy.blocks || []).forEach(b => b.id = id());
+  mag.pages.splice(selPage + 1, 0, copy);
+  selPage++; render(); autosave();
+};
+document.getElementById("btnDel").onclick = () => {
+  if (!mag.pages.length) return;
+  mag.pages.splice(selPage, 1);
+  selPage = Math.max(0, selPage - 1);
+  selBlock = null; render(); autosave();
+};
+document.getElementById("btnUp").onclick = () => {
+  if (selPage <= 0) return;
+  const [p] = mag.pages.splice(selPage, 1);
+  selPage--; mag.pages.splice(selPage, 0, p); render(); autosave();
+};
+document.getElementById("btnDown").onclick = () => {
+  if (selPage >= mag.pages.length - 1) return;
+  const [p] = mag.pages.splice(selPage, 1);
+  selPage++; mag.pages.splice(selPage, 0, p); render(); autosave();
+};
+document.getElementById("btnIndex").onclick = () => rebuildIndex(true);
+document.getElementById("btnText").onclick = () => {
+  const p = currentPage(); if (!p) return;
+  p.blocks.push(textBlock(12, 20, 60, 16, "New text", 16, "#333", false));
+  selBlock = p.blocks.at(-1).id; render(); autosave();
+};
+document.getElementById("btnTitle").onclick = () => {
+  const p = currentPage(); if (!p) return;
+  const b = textBlock(8, 8, 84, 12, "Title", 34, "#2b211f", true, "Playfair Display");
+  p.blocks.push(b); selBlock = b.id; render(); autosave();
+};
+document.getElementById("btnImage").onclick = () => document.getElementById("fileImg").click();
+document.getElementById("fileImg").onchange = async e => {
+  const file = e.target.files[0]; e.target.value = "";
+  if (!file) return;
+  const p = currentPage(); if (!p) return;
+  setStatus("Importing image…");
+  const src = await compressImage(file);
+  const b = imageBlock(src);
+  p.blocks.push(b); selBlock = b.id; render(); autosave();
+  setStatus("Image added. Trim with the sliders.", true);
+};
+document.getElementById("btnBgImg").onclick = () => {
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "image/*";
+  input.onchange = async () => {
+    const p = currentPage(); if (!p || !input.files[0]) return;
+    p.bgImage = await compressImage(input.files[0]);
+    render(); autosave();
+  };
+  input.click();
+};
+document.getElementById("btnBgClear").onclick = () => { const p = currentPage(); if (!p) return; p.bgImage = ""; render(); autosave(); };
+document.getElementById("btnSave").onclick = saveJson;
+document.getElementById("btnZip").onclick = saveFolder;
+document.getElementById("btnOpen").onclick = () => document.getElementById("fileOpen").click();
+document.getElementById("fileOpen").onchange = e => { openFile(e.target.files[0]); e.target.value = ""; };
+document.getElementById("btnPdf").onclick = () => exportPdf().catch(err => setStatus(err.message || "PDF failed"));
+document.getElementById("btnEpub").onclick = () => exportEpub().catch(err => setStatus(err.message || "EPUB failed"));
+document.addEventListener("keydown", e => {
+  if (e.key === "Delete" && selected() && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+    const p = currentPage();
+    p.blocks = p.blocks.filter(b => b.id !== selBlock);
+    selBlock = null; render(); autosave();
+  }
+});
+
+if (!loadAutosave() || !mag.pages || !mag.pages.length) { mag = blankMag(); seed(); }
+bindMeta();
+render();
+setStatus("Autosave on. Export PDF or EPUB when the issue is ready.");
+</script>
+</body>
+</html>
