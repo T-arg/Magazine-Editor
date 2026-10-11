@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.18</title>
+<title>Magazine Editor v0.2.19</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -39,7 +39,12 @@
   .thumb { width:36px; height:48px; background:#fff; border:1px solid #ccc; flex-shrink:0; }
   .stage { min-width:0; overflow:auto; background:radial-gradient(circle at 20% 0%, #fff, #eceae6 55%); display:flex; flex-direction:column; align-items:center; padding:16px 16px 28px; }
   .stagebar { width:100%; display:flex; gap:8px; align-items:center; margin-bottom:10px; color:var(--muted); }
+  .sheet-wrap { display:flex; justify-content:safe center; width:max-content; min-width:100%; }
+  .spread { display:flex; gap:22px; align-items:flex-start; }
+  .pagecol { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .pagetag { color:#6b5f5e; font-size:12px; }
   .sheet { position:relative; background:#fff; overflow:hidden; box-shadow:0 16px 40px rgba(74,59,58,.22); }
+  .sheet.active-page { outline:3px solid #4a3b3a; }
   .sheet .sheen { pointer-events:none; position:absolute; inset:0; z-index:80; background:linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%); }
   .folio { position:absolute; z-index:70; left:0; right:0; bottom:3.2%; text-align:center; font:600 10px "Segoe UI", sans-serif; letter-spacing:.18em; color:#6b5f5e; pointer-events:none; }
   .block { position:absolute; z-index:2; min-width:8px; min-height:8px; border:1px dashed transparent; }
@@ -77,7 +82,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.18</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.19</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -135,6 +140,9 @@
       <span>Zoom</span>
       <input id="zoom" type="range" min="40" max="160" value="80">
       <span id="zoomLabel">80%</span>
+      <span>View</span>
+      <button id="view1" type="button">1 page</button>
+      <button id="view2" type="button" class="ghost">2 pages</button>
       <span id="pageMeta" style="margin-left:auto"></span>
     </div>
     <div id="sheetWrap" class="sheet-wrap"></div>
@@ -218,6 +226,7 @@ let mag = blankMag();
 let selPage = 0;
 let selBlock = null;
 let zoom = 0.8;
+let spread = false;
 function blankMag() { return { version:1, name:"Untitled Magazine", issue:"Issue 01", date:"October 2026", size:"A4", showFolio:true, gridMm:5, showGrid:true, pages:[] }; }
 function pageSize() { return SIZES[mag.size] || SIZES.A4; }
 function setStatus(t, ok) { const el = document.getElementById("status"); el.textContent = t || ""; el.className = "status" + (ok ? " ok" : ""); }
@@ -317,28 +326,35 @@ function escapeHtml(s) {
 }
 
 function currentPage() { return mag.pages[selPage]; }
-function renderSheet() {
-  const wrap = document.getElementById("sheetWrap");
-  wrap.innerHTML = "";
+function pairIndexes() {
+  if (!mag.pages.length) return [];
+  if (!spread) return [selPage];
+  const start = selPage - (selPage % 2);
+  const out = [];
+  if (mag.pages[start]) out.push(start);
+  if (mag.pages[start + 1]) out.push(start + 1);
+  return out.length ? out : [selPage];
+}
+function syncPageFields() {
   const p = currentPage();
-  const sz = pageSize();
-  document.getElementById("pageMeta").textContent = p ? (p.label + " / " + sz.w + " x " + sz.h + " mm") : "";
   if (!p) return;
-  const sheet = document.createElement("div");
-  sheet.className = "sheet";
+  document.getElementById("pageLabel").value = p.label || "";
+  document.getElementById("pageFolio").checked = p.folio !== false;
+  document.getElementById("pageBg").value = toHex(p.bg || "#ffffff");
+}
+function markActivePage() {
+  document.querySelectorAll(".sheet").forEach(s => s.classList.toggle("active-page", +s.dataset.page === selPage));
+}
+function buildSheet(pageIndex) {
+  const p = mag.pages[pageIndex];
+  const sz = pageSize();
   const baseW = sz.w * 3.2;
   const baseH = baseW * sz.h / sz.w;
+  const sheet = document.createElement("div");
+  sheet.className = "sheet" + (pageIndex === selPage ? " active-page" : "");
+  sheet.dataset.page = String(pageIndex);
   sheet.style.width = baseW + "px";
   sheet.style.height = baseH + "px";
-  sheet.style.transformOrigin = "top left";
-  sheet.style.transform = "scale(" + zoom + ")";
-  const scaler = document.createElement("div");
-  scaler.style.position = "relative";
-  scaler.style.width = (baseW * zoom) + "px";
-  scaler.style.height = (baseH * zoom) + "px";
-  sheet.style.position = "absolute";
-  sheet.style.left = "0";
-  sheet.style.top = "0";
   sheet.style.background = p.bg || "#fff";
   if (p.bgImage) { sheet.style.backgroundImage = "url(" + p.bgImage + ")"; sheet.style.backgroundSize = "cover"; sheet.style.backgroundPosition = "center"; }
   if (mag.showGrid !== false) {
@@ -351,14 +367,14 @@ function renderSheet() {
     sheet.appendChild(g);
   }
   (p.blocks || []).forEach((b, i) => {
-    const el = renderBlock(b);
+    const el = renderBlock(b, pageIndex);
     el.style.zIndex = String(2 + i);
     sheet.appendChild(el);
   });
   if (p.folio !== false) {
     const f = document.createElement("div");
     f.className = "folio";
-    f.textContent = String(selPage + 1).padStart(2, "0");
+    f.textContent = String(pageIndex + 1).padStart(2, "0");
     if (isDark(p.bg)) f.style.color = "rgba(254,254,253,.7)";
     sheet.appendChild(f);
   }
@@ -367,15 +383,48 @@ function renderSheet() {
   sheet.appendChild(sheen);
   sheet.addEventListener("pointerdown", e => {
     if (e.target === sheet || e.target.classList.contains("sheen") || e.target.classList.contains("folio")) {
-      selBlock = null; renderInspector();
+      selBlock = null;
+      if (selPage !== pageIndex) selPage = pageIndex;
       document.querySelectorAll(".block").forEach(n => n.classList.remove("selected"));
+      markActivePage();
+      renderList(); renderLayers(); syncPageFields(); renderInspector();
     }
   });
-  scaler.appendChild(sheet);
-  wrap.appendChild(scaler);
-  document.getElementById("pageLabel").value = p.label || "";
-  document.getElementById("pageFolio").checked = p.folio !== false;
-  document.getElementById("pageBg").value = toHex(p.bg || "#ffffff");
+  return { sheet, baseW, baseH };
+}
+function renderSheet() {
+  const wrap = document.getElementById("sheetWrap");
+  wrap.innerHTML = "";
+  const sz = pageSize();
+  const indexes = pairIndexes();
+  const labels = indexes.map(i => (i + 1) + ". " + (mag.pages[i].label || "Page"));
+  document.getElementById("pageMeta").textContent = (labels.join("  +  ") || "") + (sz ? " / " + sz.w + " x " + sz.h + " mm" : "");
+  if (!indexes.length) return;
+  const row = document.createElement("div");
+  row.className = "spread";
+  indexes.forEach(i => {
+    const built = buildSheet(i);
+    const scaler = document.createElement("div");
+    scaler.style.position = "relative";
+    scaler.style.width = (built.baseW * zoom) + "px";
+    scaler.style.height = (built.baseH * zoom) + "px";
+    built.sheet.style.transformOrigin = "top left";
+    built.sheet.style.transform = "scale(" + zoom + ")";
+    built.sheet.style.position = "absolute";
+    built.sheet.style.left = "0";
+    built.sheet.style.top = "0";
+    scaler.appendChild(built.sheet);
+    const col = document.createElement("div");
+    col.className = "pagecol";
+    const tag = document.createElement("div");
+    tag.className = "pagetag";
+    tag.textContent = (i + 1) + ". " + (mag.pages[i].label || "Page");
+    col.appendChild(scaler);
+    col.appendChild(tag);
+    row.appendChild(col);
+  });
+  wrap.appendChild(row);
+  syncPageFields();
 }
 function isDark(hex) {
   const h = toHex(hex || "#ffffff").slice(1);
@@ -383,7 +432,7 @@ function isDark(hex) {
   return (r * 299 + g * 587 + b * 114) / 1000 < 140;
 }
 function toHex(c) { if (c && c[0] === "#" && c.length === 7) return c; return "#ffffff"; }
-function renderBlock(b) {
+function renderBlock(b, pageIndex) {
   const el = document.createElement("div");
   el.className = "block" + (selBlock === b.id ? " selected" : "");
   el.dataset.bid = b.id;
@@ -452,16 +501,26 @@ function renderBlock(b) {
   el.addEventListener("pointerdown", e => {
     if (e.target === handle) return;
     e.stopPropagation();
+    if (selPage !== pageIndex) selPage = pageIndex;
     selBlock = b.id;
     document.querySelectorAll(".block").forEach(n => n.classList.remove("selected"));
     el.classList.add("selected");
-    renderInspector();
+    markActivePage();
+    renderList(); renderLayers(); syncPageFields(); renderInspector();
     dragMove(e, b, el);
   });
-  handle.addEventListener("pointerdown", e => { e.stopPropagation(); selBlock = b.id; dragResize(e, b, el); });
+  handle.addEventListener("pointerdown", e => {
+    e.stopPropagation();
+    if (selPage !== pageIndex) selPage = pageIndex;
+    selBlock = b.id;
+    markActivePage();
+    renderList(); renderLayers(); syncPageFields();
+    dragResize(e, b, el);
+  });
   el.addEventListener("dblclick", e => {
     if (b.type !== "text") return;
     e.stopPropagation();
+    if (selPage !== pageIndex) selPage = pageIndex;
     selBlock = b.id;
     openTextEditor(b, true);
     const ed = document.getElementById("tx");
@@ -496,7 +555,7 @@ function dragMove(e, b, el) {
     if (b.type !== "cover") snapBlock(b);
     el.style.left = b.x + "%"; el.style.top = b.y + "%";
   };
-  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
+  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderList(); renderLayers(); syncPageFields(); renderInspector(); };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
 }
 function dragResize(e, b, el) {
@@ -510,7 +569,7 @@ function dragResize(e, b, el) {
     b.w = clamp(snap(b.w, "x"), 4, 100 - b.x); b.h = clamp(snap(b.h, "y"), 3, 100 - b.y); snapBlock(b);
     el.style.left = b.x + "%"; el.style.top = b.y + "%"; el.style.width = b.w + "%"; el.style.height = b.h + "%";
   };
-  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderInspector(); };
+  const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); autosave(); renderList(); renderLayers(); syncPageFields(); renderInspector(); };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
 }
 function sanitizeHtml(raw) {
@@ -1161,6 +1220,14 @@ document.getElementById("pageLabel").addEventListener("input", e => { const p = 
 document.getElementById("pageFolio").addEventListener("change", e => { const p = currentPage(); if (!p) return; p.folio = e.target.checked; renderSheet(); autosave(); });
 document.getElementById("pageBg").addEventListener("input", e => { const p = currentPage(); if (p) { p.bg = e.target.value; renderSheet(); autosave(); } });
 document.getElementById("zoom").addEventListener("input", e => { zoom = +e.target.value / 100; document.getElementById("zoomLabel").textContent = e.target.value + "%"; renderSheet(); });
+function setSpread(on) {
+  spread = !!on;
+  document.getElementById("view1").classList.toggle("ghost", spread);
+  document.getElementById("view2").classList.toggle("ghost", !spread);
+  renderSheet();
+}
+document.getElementById("view1").onclick = () => setSpread(false);
+document.getElementById("view2").onclick = () => setSpread(true);
 document.getElementById("btnAdd").onclick = () => { const kind = document.getElementById("pageKind").value || "blank"; mag.pages.splice(selPage + 1, 0, newPage(kind)); selPage = Math.min(selPage + 1, mag.pages.length - 1); if (kind === "index") rebuildIndex(false); else { render(); autosave(); } };
 document.getElementById("btnDup").onclick = () => { const p = currentPage(); if (!p) return; const copy = JSON.parse(JSON.stringify(p)); copy.id = id(); copy.label = (p.label || "Page") + " copy"; (copy.blocks || []).forEach(b => b.id = id()); mag.pages.splice(selPage + 1, 0, copy); selPage++; render(); autosave(); };
 document.getElementById("btnDel").onclick = () => { if (!mag.pages.length) return; mag.pages.splice(selPage, 1); selPage = Math.max(0, selPage - 1); selBlock = null; render(); autosave(); };
