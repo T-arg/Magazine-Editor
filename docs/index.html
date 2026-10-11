@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.6</title>
+<title>Magazine Editor v0.2.7</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -73,7 +73,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.6</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.7</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -206,15 +206,21 @@ function textBlock(x, y, w, h, text, size, color, index, font) {
 function imageBlock(src) { return { id:id(), type:"image", x:10, y:10, w:40, h:30, src, fit:"cover", crop:{l:0,t:0,r:0,b:0}, radius:0, shadow:true }; }
 function shapeBlock() { return { id:id(), type:"shape", shape:"box", x:12, y:12, w:24, h:16, fill:"#f4d35e", stroke:"#4a3b3a", strokeWidth:2 }; }
 function shapeSvg(b) {
-  const sw = b.strokeWidth || 2;
-  const fill = b.fill || "#f4d35e";
-  const stroke = b.stroke || "#4a3b3a";
-  const common = "fill=" + JSON.stringify(fill) + " stroke=" + JSON.stringify(stroke) + " stroke-width=" + JSON.stringify(String(sw)) + " vector-effect=non-scaling-stroke";
-  let inner = "<rect x=2 y=2 width=96 height=96 " + common + "/>";
-  if (b.shape === "circle") inner = "<ellipse cx=50 cy=50 rx=46 ry=46 " + common + "/>";
-  if (b.shape === "triangle") inner = "<polygon points=50,6 94,94 6,94 " + common + "/>";
-  if (b.shape === "arrow") inner = "<polygon points=4,30 60,30 60,10 96,50 60,90 60,70 4,70 " + common + "/>";
-  return "<svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" width=\"100%\" height=\"100%\">" + inner + "</svg>";
+  const sw = b.strokeWidth == null ? 2 : +b.strokeWidth;
+  const fill = (b.noFill || b.fill === "none") ? "none" : (b.fill || "#f4d35e");
+  const stroke = sw <= 0 ? "none" : (b.stroke || "#4a3b3a");
+  const attr = " fill=\"" + fill + "\" stroke=\"" + stroke + "\" stroke-width=\"" + sw + "\"";
+  const kind = b.shape === "arrow" ? "arrow-right" : (b.shape || "box");
+  const shapes = {
+    box: "<rect x=\"2\" y=\"2\" width=\"96\" height=\"96\"" + attr + "/>",
+    circle: "<ellipse cx=\"50\" cy=\"50\" rx=\"46\" ry=\"46\"" + attr + "/>",
+    triangle: "<polygon points=\"50,6 94,94 6,94\"" + attr + "/>",
+    "arrow-right": "<polygon points=\"4,30 60,30 60,10 96,50 60,90 60,70 4,70\"" + attr + "/>",
+    "arrow-left": "<polygon points=\"96,30 40,30 40,10 4,50 40,90 40,70 96,70\"" + attr + "/>",
+    "arrow-up": "<polygon points=\"30,96 30,40 10,40 50,4 90,40 70,40 70,96\"" + attr + "/>",
+    "arrow-down": "<polygon points=\"30,4 30,60 10,60 50,96 90,60 70,60 70,4\"" + attr + "/>"
+  };
+  return "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" width=\"100%\" height=\"100%\">" + (shapes[kind] || shapes.box) + "</svg>";
 }
 function tableBlock() {
   const cell = () => ({ text:"", bg:"" });
@@ -469,9 +475,9 @@ function renderInspector() {
     const apply = () => { const sz2 = pageSize(); b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100); b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100); b.fit = box.querySelector("#fit").value; b.crop = { l:+box.querySelector("#cL").value, t:+box.querySelector("#cT").value, r:+box.querySelector("#cR").value, b:+box.querySelector("#cB").value }; snapBlock(b); renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
   } else if (b.type === "shape") {
-    box.innerHTML = "<div class=\"row\"><label>Shape</label><select id=\"shKind\"><option value=\"box\">Box</option><option value=\"circle\">Circle</option><option value=\"triangle\">Triangle</option><option value=\"arrow\">Arrow</option></select></div><div class=\"row\"><label>Fill</label><input id=\"shFill\" type=\"color\" value=\"" + toHex(b.fill) + "\"></div><div class=\"row\"><label>Line</label><input id=\"shStroke\" type=\"color\" value=\"" + toHex(b.stroke) + "\"></div><div class=\"row\"><label>Line size</label><input id=\"shW\" type=\"number\" min=\"0\" max=\"20\" value=\"" + (b.strokeWidth || 2) + "\" style=\"width:64px\"></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
-    box.querySelector("#shKind").value = b.shape || "box";
-    const applyShape = () => { b.shape = box.querySelector("#shKind").value; b.fill = box.querySelector("#shFill").value; b.stroke = box.querySelector("#shStroke").value; b.strokeWidth = +box.querySelector("#shW").value; renderSheet(); autosave(); };
+    box.innerHTML = "<div class=\"row\"><label>Shape</label><select id=\"shKind\"><option value=\"box\">Box</option><option value=\"circle\">Circle</option><option value=\"triangle\">Triangle</option><option value=\"arrow-right\">Arrow right</option><option value=\"arrow-left\">Arrow left</option><option value=\"arrow-up\">Arrow up</option><option value=\"arrow-down\">Arrow down</option></select></div><div class=\"row\"><label>Fill</label><input id=\"shFill\" type=\"color\" value=\"" + toHex(b.fill === "none" ? "#f4d35e" : b.fill) + "\"></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"shNone\" type=\"checkbox\"" + (b.noFill || b.fill === "none" ? " checked" : "") + "> no fill</label></div><div class=\"row\"><label>Line</label><input id=\"shStroke\" type=\"color\" value=\"" + toHex(b.stroke) + "\"></div><div class=\"row\"><label>Line size</label><input id=\"shW\" type=\"number\" min=\"0\" max=\"20\" value=\"" + (b.strokeWidth == null ? 2 : b.strokeWidth) + "\" style=\"width:64px\"></div><p class=\"hint\">Line size 0 hides the outline. No fill leaves only the outline.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    box.querySelector("#shKind").value = b.shape === "arrow" ? "arrow-right" : (b.shape || "box");
+    const applyShape = () => { b.shape = box.querySelector("#shKind").value; b.noFill = box.querySelector("#shNone").checked; b.fill = b.noFill ? "none" : box.querySelector("#shFill").value; b.stroke = box.querySelector("#shStroke").value; b.strokeWidth = +box.querySelector("#shW").value; renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", applyShape));
   } else if (b.type !== "table") {
     box.innerHTML = "<p class=\"hint\">Double-click the block to open the text editor.</p><div class=\"row\"><label>Size</label><input id=\"fs\" type=\"number\" min=\"8\" max=\"120\" value=\"" + (b.size||16) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"mmW\" type=\"number\" step=\"0.5\" value=\"" + mmW + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"mmH\" type=\"number\" step=\"0.5\" value=\"" + mmH + "\"></div><div class=\"row\"><label>Color</label><input id=\"col\" type=\"color\" value=\"" + toHex(b.color) + "\"></div><div class=\"row\"><label>Font</label><select id=\"font\"><option>Georgia</option><option>Segoe UI</option></select></div><div class=\"row\"><label>Align</label><select id=\"al\"><option>left</option><option>center</option><option>right</option></select></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"idx\" type=\"checkbox\"" + (b.index ? " checked" : "") + "> Index title</label></div><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
@@ -773,12 +779,16 @@ async function paintPage(p, pageIndex) {
     if (b.type === "shape") {
       ctx.save();
       ctx.beginPath();
-      if (b.shape === "circle") ctx.ellipse(x + bw / 2, y + bh / 2, Math.max(1, bw / 2), Math.max(1, bh / 2), 0, 0, Math.PI * 2);
-      else if (b.shape === "triangle") { ctx.moveTo(x + bw / 2, y); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x, y + bh); ctx.closePath(); }
-      else if (b.shape === "arrow") { ctx.moveTo(x, y + bh * 0.3); ctx.lineTo(x + bw * 0.6, y + bh * 0.3); ctx.lineTo(x + bw * 0.6, y + bh * 0.1); ctx.lineTo(x + bw, y + bh * 0.5); ctx.lineTo(x + bw * 0.6, y + bh * 0.9); ctx.lineTo(x + bw * 0.6, y + bh * 0.7); ctx.lineTo(x, y + bh * 0.7); ctx.closePath(); }
+      const kind = b.shape === "arrow" ? "arrow-right" : b.shape;
+      if (kind === "circle") ctx.ellipse(x + bw / 2, y + bh / 2, Math.max(1, bw / 2), Math.max(1, bh / 2), 0, 0, Math.PI * 2);
+      else if (kind === "triangle") { ctx.moveTo(x + bw / 2, y); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x, y + bh); ctx.closePath(); }
+      else if (kind === "arrow-left") { ctx.moveTo(x + bw, y + bh * 0.3); ctx.lineTo(x + bw * 0.4, y + bh * 0.3); ctx.lineTo(x + bw * 0.4, y + bh * 0.1); ctx.lineTo(x, y + bh * 0.5); ctx.lineTo(x + bw * 0.4, y + bh * 0.9); ctx.lineTo(x + bw * 0.4, y + bh * 0.7); ctx.lineTo(x + bw, y + bh * 0.7); ctx.closePath(); }
+      else if (kind === "arrow-up") { ctx.moveTo(x + bw * 0.3, y + bh); ctx.lineTo(x + bw * 0.3, y + bh * 0.4); ctx.lineTo(x + bw * 0.1, y + bh * 0.4); ctx.lineTo(x + bw * 0.5, y); ctx.lineTo(x + bw * 0.9, y + bh * 0.4); ctx.lineTo(x + bw * 0.7, y + bh * 0.4); ctx.lineTo(x + bw * 0.7, y + bh); ctx.closePath(); }
+      else if (kind === "arrow-down") { ctx.moveTo(x + bw * 0.3, y); ctx.lineTo(x + bw * 0.3, y + bh * 0.6); ctx.lineTo(x + bw * 0.1, y + bh * 0.6); ctx.lineTo(x + bw * 0.5, y + bh); ctx.lineTo(x + bw * 0.9, y + bh * 0.6); ctx.lineTo(x + bw * 0.7, y + bh * 0.6); ctx.lineTo(x + bw * 0.7, y); ctx.closePath(); }
+      else if (kind === "arrow-right") { ctx.moveTo(x, y + bh * 0.3); ctx.lineTo(x + bw * 0.6, y + bh * 0.3); ctx.lineTo(x + bw * 0.6, y + bh * 0.1); ctx.lineTo(x + bw, y + bh * 0.5); ctx.lineTo(x + bw * 0.6, y + bh * 0.9); ctx.lineTo(x + bw * 0.6, y + bh * 0.7); ctx.lineTo(x, y + bh * 0.7); ctx.closePath(); }
       else ctx.rect(x, y, bw, bh);
-      ctx.fillStyle = b.fill || "#f4d35e"; ctx.fill();
-      ctx.strokeStyle = b.stroke || "#4a3b3a"; ctx.lineWidth = b.strokeWidth || 2; ctx.stroke();
+      if (!(b.noFill || b.fill === "none")) { ctx.fillStyle = b.fill || "#f4d35e"; ctx.fill(); }
+      if ((b.strokeWidth == null ? 2 : +b.strokeWidth) > 0) { ctx.strokeStyle = b.stroke || "#4a3b3a"; ctx.lineWidth = +b.strokeWidth || 2; ctx.stroke(); }
       ctx.restore();
       continue;
     }
