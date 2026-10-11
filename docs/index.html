@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.15</title>
+<title>Magazine Editor v0.2.16</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -40,7 +40,6 @@
   .sheet .sheen { pointer-events:none; position:absolute; inset:0; z-index:5; background:linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%); }
   .folio { position:absolute; z-index:4; left:0; right:0; bottom:3.2%; text-align:center; font:600 10px "Segoe UI", sans-serif; letter-spacing:.18em; color:#6b5f5e; pointer-events:none; }
   .block { position:absolute; z-index:2; min-width:8px; min-height:8px; border:1px dashed transparent; }
-  .block.selected { z-index:4; }
   .block svg, .block .shapehit { pointer-events:all; display:block; width:100%; height:100%; }
   .block.selected { border-color:#4a3b3a; outline:1px solid rgba(244,211,94,.9); }
   .block .txt { width:100%; height:100%; overflow:hidden; white-space:pre-wrap; word-break:break-word; }
@@ -75,7 +74,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.15</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.16</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -122,6 +121,9 @@
       <button id="btnIndex" type="button" class="ghost">Rebuild index</button>
     </div>
     <div id="pageList" class="pagelist"></div>
+    <h2>Layers</h2>
+    <p class="hint">Top of the list is the front layer.</p>
+    <div id="layerList" class="pagelist"></div>
     <p class="hint">Save JSON writes one .mag.json file with the text and images inside it. Open reads that file back. Work is also kept in this browser. After the page has loaded, editing and export do not need a network.</p>
     <p id="status" class="status"></p>
   </aside>
@@ -264,7 +266,7 @@ function shapeSvg(b) {
     "arrow-up": "<polygon points=\"30,96 30,40 10,40 50,4 90,40 70,40 70,96\"" + attr + "/>",
     "arrow-down": "<polygon points=\"30,4 30,60 10,60 50,96 90,60 70,60 70,4\"" + attr + "/>"
   };
-  return "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" width=\"100%\" height=\"100%\" style=\"pointer-events:all\">" + (shapes[kind] || shapes.box) + "</svg>";
+  return "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" width=\"100%\" height=\"100%\" style=\"pointer-events:all\"><rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"transparent\"/>" + (shapes[kind] || shapes.box) + "</svg>";
 }
 function tableBlock() {
   const cell = () => ({ text:"", bg:"" });
@@ -607,7 +609,40 @@ function renderInspector() {
   }
   box.querySelector("#delBlock").onclick = () => { const p = currentPage(); p.blocks = p.blocks.filter(x => x.id !== b.id); selBlock = null; render(); autosave(); };
 }
-function render() { readMeta(); renderList(); renderSheet(); renderInspector(); }
+
+function blockName(b) {
+  if (b.type === "text") return "Text: " + (((b.text || "").split("\n")[0] || "empty").slice(0, 22));
+  if (b.type === "rottext") return "Rotated: " + ((b.text || "empty").slice(0, 18));
+  if (b.type === "image") return "Image";
+  if (b.type === "shape") return "Shape: " + (b.shape || "box");
+  if (b.type === "table") return "Table";
+  if (b.type === "index") return "Index";
+  return b.type || "Block";
+}
+function renderLayers() {
+  const box = document.getElementById("layerList");
+  if (!box) return;
+  box.innerHTML = "";
+  const p = currentPage();
+  if (!p) return;
+  (p.blocks || []).map((b, i) => ({ b, i })).reverse().forEach(({ b, i }) => {
+    const el = document.createElement("div");
+    el.className = "layeritem" + (b.id === selBlock ? " active" : "");
+    el.innerHTML = "<span>" + escapeHtml(blockName(b)) + "</span><span class=\"row\"><button type=\"button\" data-dir=\"1\">Up</button><button type=\"button\" data-dir=\"-1\">Down</button></span>";
+    el.addEventListener("click", () => { selBlock = b.id; render(); });
+    el.querySelectorAll("button").forEach(btn => btn.addEventListener("click", ev => {
+      ev.stopPropagation();
+      const j = i + (+btn.getAttribute("data-dir"));
+      if (j < 0 || j >= p.blocks.length) return;
+      const item = p.blocks.splice(i, 1)[0];
+      p.blocks.splice(j, 0, item);
+      selBlock = item.id;
+      render(); autosave();
+    }));
+    box.appendChild(el);
+  });
+}
+function render() { readMeta(); renderList(); renderLayers(); renderSheet(); renderInspector(); }
 function indexEntries() {
   const out = [];
   mag.pages.forEach((p, i) => { if (p.role === "index") return; (p.blocks || []).forEach(b => { if (b.type === "text" && b.index) { const title = (b.text || "").split("\n")[0].trim(); if (title) out.push({ title, page:i + 1 }); } }); });
