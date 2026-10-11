@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.12</title>
+<title>Magazine Editor v0.2.13</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -73,7 +73,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.12</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.13</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -162,7 +162,7 @@
 </div>
 <div id="textPop" class="textpop hidden">
   <div class="textpop-bar" id="textPopBar"><span>Text</span><button id="textPopClose" type="button">Close</button></div>
-  <div class="rt-tools row" id="textTools"><button type="button" data-cmd="bold"><b>B</b></button><button type="button" data-cmd="italic"><i>I</i></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="strikeThrough"><s>S</s></button><button type="button" data-cmd="insertUnorderedList">List</button><button type="button" data-cmd="insertOrderedList">1.</button><button type="button" data-cmd="removeFormat">Clear</button><button type="button" data-cmd="justifyLeft">Left</button><button type="button" data-cmd="justifyCenter">Middle</button><button type="button" data-cmd="justifyRight">Right</button><button type="button" data-cmd="justifyFull">Justify</button></div>
+  <div class="rt-tools row" id="textTools"><select id="popFont" style="min-width:140px"></select><button type="button" data-cmd="bold"><b>B</b></button><button type="button" data-cmd="italic"><i>I</i></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="strikeThrough"><s>S</s></button><button type="button" data-cmd="insertUnorderedList">List</button><button type="button" data-cmd="insertOrderedList">1.</button><button type="button" data-cmd="removeFormat">Clear</button><button type="button" data-cmd="justifyLeft">Left</button><button type="button" data-cmd="justifyCenter">Middle</button><button type="button" data-cmd="justifyRight">Right</button><button type="button" data-cmd="justifyFull">Justify</button></div>
   <div id="tx" class="rt" contenteditable="true"></div>
 </div>
 <div id="cropModal" class="modal hidden">
@@ -409,7 +409,7 @@ function renderBlock(b) {
   } else if (b.type === "table") {
     const table = document.createElement("table");
     table.style.background = b.bg || "transparent";
-    table.style.fontFamily = "Segoe UI, sans-serif";
+    table.style.fontFamily = fontInfo(b.font).css; table.style.fontWeight = fontInfo(b.font).weight;
     table.style.fontSize = "13px";
     table.style.color = "#333";
     (b.rows || []).forEach((row, r) => {
@@ -543,9 +543,10 @@ function renderInspector() {
     const applyRot = () => { b.rotate = box.querySelector("#rotDir").value; b.text = box.querySelector("#rotTx").value; b.font = box.querySelector("#rotFont").value; b.size = +box.querySelector("#rotFs").value; b.color = box.querySelector("#rotCol").value; renderSheet(); autosave(); };
     box.querySelectorAll("input,select,textarea").forEach(n => n.addEventListener("input", applyRot));
   } else if (b.type === "index") {
-    box.innerHTML = "<div class=\"row\"><label>Text size</label><input id=\"ixTs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.titleSize || 16) + "\"></div><div class=\"row\"><label>Number size</label><input id=\"ixNs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.numberSize || 14) + "\"></div><div class=\"row\"><label>Text color</label><input id=\"ixTc\" type=\"color\" value=\"" + toHex(b.titleColor) + "\"></div><div class=\"row\"><label>Number color</label><input id=\"ixNc\" type=\"color\" value=\"" + toHex(b.numberColor) + "\"></div><div class=\"row\"><label>Numbers</label><select id=\"ixPos\"><option value=\"after\">After text</option><option value=\"before\">Before text</option></select></div><p class=\"hint\">This block lists Index titles. Rebuild refreshes the list and keeps this layout.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    box.innerHTML = "<div class=\"row\"><label>Font</label><select id=\"ixFont\">" + fontOptions() + "</select></div><div class=\"row\"><label>Text size</label><input id=\"ixTs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.titleSize || 16) + "\"></div><div class=\"row\"><label>Number size</label><input id=\"ixNs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.numberSize || 14) + "\"></div><div class=\"row\"><label>Text color</label><input id=\"ixTc\" type=\"color\" value=\"" + toHex(b.titleColor) + "\"></div><div class=\"row\"><label>Number color</label><input id=\"ixNc\" type=\"color\" value=\"" + toHex(b.numberColor) + "\"></div><div class=\"row\"><label>Numbers</label><select id=\"ixPos\"><option value=\"after\">After text</option><option value=\"before\">Before text</option></select></div><p class=\"hint\">This block lists Index titles. Rebuild refreshes the list and keeps this layout.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
     box.querySelector("#ixPos").value = b.numberPos || "after";
-    const applyIndex = () => { b.titleSize = +box.querySelector("#ixTs").value; b.numberSize = +box.querySelector("#ixNs").value; b.titleColor = box.querySelector("#ixTc").value; b.numberColor = box.querySelector("#ixNc").value; b.numberPos = box.querySelector("#ixPos").value; renderSheet(); autosave(); };
+    box.querySelector("#ixFont").value = fontInfo(b.font).id;
+    const applyIndex = () => { b.titleSize = +box.querySelector("#ixTs").value; b.numberSize = +box.querySelector("#ixNs").value; b.titleColor = box.querySelector("#ixTc").value; b.numberColor = box.querySelector("#ixNc").value; b.numberPos = box.querySelector("#ixPos").value; b.font = box.querySelector("#ixFont").value; renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", applyIndex));
   } else if (b.type === "shape") {
     box.innerHTML = "<div class=\"row\"><label>Shape</label><select id=\"shKind\"><option value=\"box\">Box</option><option value=\"circle\">Circle</option><option value=\"triangle\">Triangle</option><option value=\"arrow-right\">Arrow right</option><option value=\"arrow-left\">Arrow left</option><option value=\"arrow-up\">Arrow up</option><option value=\"arrow-down\">Arrow down</option></select></div><div class=\"row\"><label>Fill</label><input id=\"shFill\" type=\"color\" value=\"" + toHex(b.fill === "none" ? "#f4d35e" : b.fill) + "\"></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"shNone\" type=\"checkbox\"" + (b.noFill || b.fill === "none" ? " checked" : "") + "> no fill</label></div><div class=\"row\"><label>Line</label><input id=\"shStroke\" type=\"color\" value=\"" + toHex(b.stroke) + "\"></div><div class=\"row\"><label>Line size</label><input id=\"shW\" type=\"number\" min=\"0\" max=\"20\" value=\"" + (b.strokeWidth == null ? 2 : b.strokeWidth) + "\" style=\"width:64px\"></div><p class=\"hint\">Line size 0 hides the outline. No fill leaves only the outline.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
@@ -582,8 +583,9 @@ function renderInspector() {
     const r = Math.min(tableSel.r || 0, b.rows.length - 1);
     const c = Math.min(tableSel.c || 0, b.rows[0].cells.length - 1);
     tableSel = { r, c };
-    box.innerHTML = "<div class=\"row\"><button id=\"addRow\" type=\"button\" class=\"ghost\">Add row</button><button id=\"delRow\" type=\"button\" class=\"ghost\">Delete row</button><button id=\"addCol\" type=\"button\" class=\"ghost\">Add column</button><button id=\"delCol\" type=\"button\" class=\"ghost\">Delete column</button></div><div class=\"row\"><label>Border</label><input id=\"tbBorder\" type=\"color\" value=\"" + toHex(b.border) + "\"><input id=\"tbW\" type=\"number\" min=\"0\" max=\"8\" value=\"" + (b.borderWidth || 1) + "\" style=\"width:56px\"></div><div class=\"row\"><label>Apply bg</label><select id=\"tbTarget\"><option value=\"table\">Table</option><option value=\"row\">Row " + (r + 1) + "</option><option value=\"col\">Column " + (c + 1) + "</option><option value=\"cell\">Cell " + (r + 1) + "," + (c + 1) + "</option></select><input id=\"tbBg\" type=\"color\" value=\"" + toHex(cellBg(b, r, c)) + "\"></div><div class=\"row\"><label>Cell text</label><input id=\"tbText\" type=\"text\" style=\"flex:1\" value=\"" + escapeHtml(b.rows[r].cells[c].text || "") + "\"></div><p class=\"hint\">Click a cell on the page to select it. Background applies to the table, that row, that column, or that cell.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
-    const paint = () => { b.border = box.querySelector("#tbBorder").value; b.borderWidth = +box.querySelector("#tbW").value; renderSheet(); autosave(); };
+    box.innerHTML = "<div class=\"row\"><button id=\"addRow\" type=\"button\" class=\"ghost\">Add row</button><button id=\"delRow\" type=\"button\" class=\"ghost\">Delete row</button><button id=\"addCol\" type=\"button\" class=\"ghost\">Add column</button><button id=\"delCol\" type=\"button\" class=\"ghost\">Delete column</button></div><div class=\"row\"><label>Border</label><input id=\"tbBorder\" type=\"color\" value=\"" + toHex(b.border) + "\"><input id=\"tbW\" type=\"number\" min=\"0\" max=\"8\" value=\"" + (b.borderWidth || 1) + "\" style=\"width:56px\"></div><div class=\"row\"><label>Apply bg</label><select id=\"tbTarget\"><option value=\"table\">Table</option><option value=\"row\">Row " + (r + 1) + "</option><option value=\"col\">Column " + (c + 1) + "</option><option value=\"cell\">Cell " + (r + 1) + "," + (c + 1) + "</option></select><input id=\"tbBg\" type=\"color\" value=\"" + toHex(cellBg(b, r, c)) + "\"></div><div class=\"row\"><label>Font</label><select id=\"tbFont\">" + fontOptions() + "</select></div><div class=\"row\"><label>Cell text</label><input id=\"tbText\" type=\"text\" style=\"flex:1\" value=\"" + escapeHtml(b.rows[r].cells[c].text || "") + "\"></div><p class=\"hint\">Click a cell on the page to select it. Background applies to the table, that row, that column, or that cell.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    box.querySelector("#tbFont").value = fontInfo(b.font).id;
+    const paint = () => { b.border = box.querySelector("#tbBorder").value; b.borderWidth = +box.querySelector("#tbW").value; b.font = box.querySelector("#tbFont").value; renderSheet(); autosave(); };
     box.querySelector("#tbBorder").oninput = paint;
     box.querySelector("#tbW").oninput = paint;
     box.querySelector("#tbBg").oninput = () => {
@@ -697,6 +699,10 @@ function openTextEditor(b, force) {
   ed.style.textAlign = b.align || "left";
   ed.style.color = b.color || "#333";
   ed.style.fontFamily = fontInfo(b.font).css; ed.style.fontWeight = fontInfo(b.font).weight;
+  const popFont = document.getElementById("popFont");
+  popFont.innerHTML = fontOptions();
+  popFont.value = fontInfo(b.font).id;
+  popFont.onchange = () => { b.font = popFont.value; ed.style.fontFamily = fontInfo(b.font).css; ed.style.fontWeight = fontInfo(b.font).weight; renderSheet(); autosave(); };
   ed.oninput = () => {
     if (selected() !== b) return;
     b.html = sanitizeHtml(ed.innerHTML);
@@ -870,16 +876,16 @@ async function paintPage(p, pageIndex) {
         if (i * rowH > bh) return;
         const yy = y + i * rowH;
         const num = String(e.page).padStart(2, "0");
-        ctx.font = "700 " + numberSize + "px sans-serif";
+        ctx.font = canvasFont(b.font, numberSize, 700);
         const nw = ctx.measureText(num).width;
-        ctx.font = titleSize + "px sans-serif";
+        ctx.font = canvasFont(b.font, titleSize);
         const tw = Math.min(ctx.measureText(e.title).width, bw - nw - 16);
         if (b.numberPos === "before") {
-          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = "700 " + numberSize + "px sans-serif"; ctx.fillText(num, x, yy);
-          ctx.fillStyle = b.titleColor || "#333"; ctx.font = titleSize + "px sans-serif"; ctx.fillText(e.title, x + nw + 10, yy, bw - nw - 14);
+          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = canvasFont(b.font, numberSize, 700); ctx.fillText(num, x, yy);
+          ctx.fillStyle = b.titleColor || "#333"; ctx.font = canvasFont(b.font, titleSize); ctx.fillText(e.title, x + nw + 10, yy, bw - nw - 14);
         } else {
-          ctx.fillStyle = b.titleColor || "#333"; ctx.font = titleSize + "px sans-serif"; ctx.fillText(e.title, x, yy, bw - nw - 14);
-          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = "700 " + numberSize + "px sans-serif"; ctx.fillText(num, x + bw - nw, yy);
+          ctx.fillStyle = b.titleColor || "#333"; ctx.font = canvasFont(b.font, titleSize); ctx.fillText(e.title, x, yy, bw - nw - 14);
+          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = canvasFont(b.font, numberSize, 700); ctx.fillText(num, x + bw - nw, yy);
         }
       });
       continue;
@@ -907,7 +913,7 @@ async function paintPage(p, pageIndex) {
       const cw = bw / Math.max(1, cols);
       ctx.lineWidth = Math.max(1, b.borderWidth || 1);
       ctx.strokeStyle = b.border || "#4a3b3a";
-      ctx.font = "13px sans-serif";
+      ctx.font = canvasFont(b.font, 13);
       ctx.fillStyle = b.color || "#333";
       ctx.textBaseline = "top";
       rows.forEach((row, ri) => {
@@ -1044,11 +1050,11 @@ async function exportEpub() {
     const blocks = (p.blocks || []).map(b => {
       const style = "position:absolute;left:" + b.x + "%;top:" + b.y + "%;width:" + b.w + "%;height:" + b.h + "%;overflow:hidden;";
       if (b.type === "rottext") return "<div style=\"" + style + "writing-mode:vertical-rl;text-orientation:mixed;" + (b.rotate === "ccw" ? "transform:rotate(180deg);transform-origin:center center;" : "") + "font-size:" + (b.size || 16) + "px;color:" + (b.color || "#333") + ";font-family:Segoe UI,sans-serif\">" + xhtmlEscape(b.text || "") + "</div>";
-      if (b.type === "index") return "<div style=\"" + style + "font-family:Segoe UI,sans-serif\">" + indexRows(b) + "</div>";
+      if (b.type === "index") return "<div style=\"" + style + "font-family:" + fontInfo(b.font).css + ";font-weight:" + fontInfo(b.font).weight + "\">" + indexRows(b) + "</div>";
       if (b.type === "shape") return "<div style=\"" + style + "\">" + shapeSvg(b) + "</div>";
       if (b.type === "table") {
         const rows = (b.rows || []).map((row, ri) => "<tr>" + row.cells.map((cell, ci) => "<td style=\"border:" + (b.borderWidth || 1) + "px solid " + (b.border || "#4a3b3a") + ";background:" + cellBg(b, ri, ci) + ";padding:4px;vertical-align:top\">" + xhtmlEscape(cell.text || "") + "</td>").join("") + "</tr>").join("");
-        return "<table style=\"" + style + "border-collapse:collapse;background:" + (b.bg || "transparent") + ";font-size:13px\">" + rows + "</table>";
+        return "<table style=\"" + style + "border-collapse:collapse;background:" + (b.bg || "transparent") + ";font-size:13px;font-family:" + fontInfo(b.font).css + ";font-weight:" + fontInfo(b.font).weight + "\">" + rows + "</table>";
       }
       if (b.type === "image") {
         const ref = takeImg(b.src);
