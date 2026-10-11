@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.16</title>
+<title>Magazine Editor v0.2.17</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -40,8 +40,8 @@
   .stage { min-width:0; overflow:auto; background:radial-gradient(circle at 20% 0%, #fff, #eceae6 55%); display:flex; flex-direction:column; align-items:center; padding:16px 16px 28px; }
   .stagebar { width:100%; display:flex; gap:8px; align-items:center; margin-bottom:10px; color:var(--muted); }
   .sheet { position:relative; background:#fff; overflow:hidden; box-shadow:0 16px 40px rgba(74,59,58,.22); }
-  .sheet .sheen { pointer-events:none; position:absolute; inset:0; z-index:5; background:linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%); }
-  .folio { position:absolute; z-index:4; left:0; right:0; bottom:3.2%; text-align:center; font:600 10px "Segoe UI", sans-serif; letter-spacing:.18em; color:#6b5f5e; pointer-events:none; }
+  .sheet .sheen { pointer-events:none; position:absolute; inset:0; z-index:80; background:linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%); }
+  .folio { position:absolute; z-index:70; left:0; right:0; bottom:3.2%; text-align:center; font:600 10px "Segoe UI", sans-serif; letter-spacing:.18em; color:#6b5f5e; pointer-events:none; }
   .block { position:absolute; z-index:2; min-width:8px; min-height:8px; border:1px dashed transparent; }
   .block svg, .block .shapehit { pointer-events:all; display:block; width:100%; height:100%; }
   .block.selected { border-color:#4a3b3a; outline:1px solid rgba(244,211,94,.9); }
@@ -77,7 +77,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.16</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.17</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -125,7 +125,7 @@
     </div>
     <div id="pageList" class="pagelist"></div>
     <h2>Layers</h2>
-    <p class="hint">Top of the list is the front layer.</p>
+    <p class="hint">Top of the list is the front layer. Click a row to edit that block, even if it is covered.</p>
     <div id="layerList" class="pagelist"></div>
     <p class="hint">Save JSON writes one .mag.json file with the text and images inside it. Open reads that file back. Work is also kept in this browser. After the page has loaded, editing and export do not need a network.</p>
     <p id="status" class="status"></p>
@@ -382,6 +382,7 @@ function toHex(c) { if (c && c[0] === "#" && c.length === 7) return c; return "#
 function renderBlock(b) {
   const el = document.createElement("div");
   el.className = "block" + (selBlock === b.id ? " selected" : "");
+  el.dataset.bid = b.id;
   el.style.left = b.x + "%"; el.style.top = b.y + "%"; el.style.width = b.w + "%"; el.style.height = b.h + "%";
   if (b.type === "image") {
     const img = document.createElement("img");
@@ -446,9 +447,12 @@ function renderBlock(b) {
   const handle = document.createElement("div"); handle.className = "handle"; el.appendChild(handle);
   el.addEventListener("pointerdown", e => {
     if (e.target === handle) return;
-    e.stopPropagation(); selBlock = b.id; renderInspector();
-    document.querySelectorAll(".block").forEach(n => n.classList.remove("selected"));
-    el.classList.add("selected"); dragMove(e, b, el);
+    e.stopPropagation();
+    const chosen = pickBlock(el.parentElement, e.clientX, e.clientY, b);
+    selBlock = chosen.block.id;
+    renderInspector();
+    document.querySelectorAll(".block").forEach(n => n.classList.toggle("selected", n.dataset.bid === chosen.block.id));
+    dragMove(e, chosen.block, chosen.el);
   });
   handle.addEventListener("pointerdown", e => { e.stopPropagation(); selBlock = b.id; dragResize(e, b, el); });
   el.addEventListener("dblclick", e => {
@@ -528,6 +532,36 @@ function blockHtml(b) {
   return escapeHtml(b.text || "").split("\n").join("<br>");
 }
 function clamp(n, a, c) { return Math.max(a, Math.min(c, n)); }
+let lastPick = { x: 0, y: 0, t: 0, id: null };
+function blocksUnderPoint(sheet, x, y) {
+  const p = currentPage();
+  if (!p || !sheet) return [];
+  const hits = [];
+  [...sheet.querySelectorAll(":scope > .block")].forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+      const block = (p.blocks || []).find(b => b.id === el.dataset.bid);
+      if (block) hits.push({ id: block.id, block, el });
+    }
+  });
+  return hits.reverse();
+}
+function pickBlock(sheet, x, y, fallback) {
+  const hits = blocksUnderPoint(sheet, x, y);
+  const now = Date.now();
+  const near = lastPick.id && Math.abs(x - lastPick.x) < 10 && Math.abs(y - lastPick.y) < 10 && (now - lastPick.t) < 900;
+  let chosen = hits[0] || null;
+  if (near && hits.length > 1 && hits.some(h => h.id === lastPick.id)) {
+    const at = hits.findIndex(h => h.id === lastPick.id);
+    chosen = hits[(at + 1) % hits.length];
+  }
+  if (!chosen) {
+    const el = [...(sheet ? sheet.querySelectorAll(":scope > .block") : [])].find(n => n.dataset.bid === fallback.id);
+    chosen = { id: fallback.id, block: fallback, el: el };
+  }
+  lastPick = { x, y, t: now, id: chosen.id };
+  return chosen;
+}
 function selected() { const p = currentPage(); if (!p) return null; return (p.blocks || []).find(b => b.id === selBlock) || null; }
 function renderInspector() {
   const box = document.getElementById("inspector");
@@ -550,10 +584,24 @@ function renderInspector() {
     const applyRot = () => { b.rotate = box.querySelector("#rotDir").value; b.text = box.querySelector("#rotTx").value; b.font = box.querySelector("#rotFont").value; b.size = +box.querySelector("#rotFs").value; b.color = box.querySelector("#rotCol").value; renderSheet(); autosave(); };
     box.querySelectorAll("input,select,textarea").forEach(n => n.addEventListener("input", applyRot));
   } else if (b.type === "index") {
-    box.innerHTML = "<h2>Index</h2><div class=\"row\"><label>Font</label><select id=\"ixFont\">" + fontOptions() + "</select></div><div class=\"row\"><label>Text size</label><input id=\"ixTs\" type=\"number\" min=\"8\" max=\"144\" value=\"" + (b.titleSize || 16) + "\"></div><div class=\"row\"><label>Number size</label><input id=\"ixNs\" type=\"number\" min=\"8\" max=\"144\" value=\"" + (b.numberSize || 14) + "\"></div><div class=\"row\"><label>Text color</label><input id=\"ixTc\" type=\"color\" value=\"" + toHex(b.titleColor) + "\"></div><div class=\"row\"><label>Number color</label><input id=\"ixNc\" type=\"color\" value=\"" + toHex(b.numberColor) + "\"></div><div class=\"row\"><label>Numbers</label><select id=\"ixPos\"><option value=\"after\">After text</option><option value=\"before\">Before text</option></select></div><p class=\"hint\">This block lists Index titles. Rebuild refreshes the list and keeps this layout.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    box.innerHTML = "<h2>Index</h2><div class=\"row\"><label>Font</label><select id=\"ixFont\">" + fontOptions() + "</select></div><div class=\"row\"><label>Text size</label><input id=\"ixTs\" type=\"number\" min=\"8\" max=\"144\" value=\"" + (b.titleSize || 16) + "\"></div><div class=\"row\"><label>Number size</label><input id=\"ixNs\" type=\"number\" min=\"8\" max=\"144\" value=\"" + (b.numberSize || 14) + "\"></div><div class=\"row\"><label>Text color</label><input id=\"ixTc\" type=\"color\" value=\"" + toHex(b.titleColor) + "\"></div><div class=\"row\"><label>Number color</label><input id=\"ixNc\" type=\"color\" value=\"" + toHex(b.numberColor) + "\"></div><div class=\"row\"><label>Numbers</label><select id=\"ixPos\"><option value=\"after\">After text</option><option value=\"before\">Before text</option></select></div><div class=\"row\"><label>X mm</label><input id=\"ixX\" type=\"number\" step=\"0.5\" value=\"" + (b.x / 100 * sz.w).toFixed(1) + "\"></div><div class=\"row\"><label>Y mm</label><input id=\"ixY\" type=\"number\" step=\"0.5\" value=\"" + (b.y / 100 * sz.h).toFixed(1) + "\"></div><div class=\"row\"><label>Width mm</label><input id=\"ixW\" type=\"number\" step=\"0.5\" value=\"" + (b.w / 100 * sz.w).toFixed(1) + "\"></div><div class=\"row\"><label>Height mm</label><input id=\"ixH\" type=\"number\" step=\"0.5\" value=\"" + (b.h / 100 * sz.h).toFixed(1) + "\"></div><p class=\"hint\">This block lists Index titles. If a shape covers it, click the same spot again or use Layers.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
     box.querySelector("#ixPos").value = b.numberPos || "after";
     box.querySelector("#ixFont").value = fontInfo(b.font).id;
-    const applyIndex = () => { b.titleSize = +box.querySelector("#ixTs").value; b.numberSize = +box.querySelector("#ixNs").value; b.titleColor = box.querySelector("#ixTc").value; b.numberColor = box.querySelector("#ixNc").value; b.numberPos = box.querySelector("#ixPos").value; b.font = box.querySelector("#ixFont").value; renderSheet(); autosave(); };
+    const applyIndex = () => {
+      const sz2 = pageSize();
+      b.titleSize = +box.querySelector("#ixTs").value;
+      b.numberSize = +box.querySelector("#ixNs").value;
+      b.titleColor = box.querySelector("#ixTc").value;
+      b.numberColor = box.querySelector("#ixNc").value;
+      b.numberPos = box.querySelector("#ixPos").value;
+      b.font = box.querySelector("#ixFont").value;
+      b.x = clamp(+box.querySelector("#ixX").value / sz2.w * 100, 0, 96);
+      b.y = clamp(+box.querySelector("#ixY").value / sz2.h * 100, 0, 96);
+      b.w = clamp(+box.querySelector("#ixW").value / sz2.w * 100, 4, 100 - b.x);
+      b.h = clamp(+box.querySelector("#ixH").value / sz2.h * 100, 3, 100 - b.y);
+      snapBlock(b);
+      renderSheet(); autosave();
+    };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", applyIndex));
   } else if (b.type === "shape") {
     box.innerHTML = "<h2>Shape</h2><div class=\"row\"><label>Shape</label><select id=\"shKind\"><option value=\"box\">Box</option><option value=\"circle\">Circle</option><option value=\"triangle\">Triangle</option><option value=\"arrow-right\">Arrow right</option><option value=\"arrow-left\">Arrow left</option><option value=\"arrow-up\">Arrow up</option><option value=\"arrow-down\">Arrow down</option></select></div><div class=\"row\"><label>Fill</label><input id=\"shFill\" type=\"color\" value=\"" + toHex(b.fill === "none" ? "#f4d35e" : b.fill) + "\"></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"shNone\" type=\"checkbox\"" + (b.noFill || b.fill === "none" ? " checked" : "") + "> no fill</label></div><div class=\"row\"><label>Line</label><input id=\"shStroke\" type=\"color\" value=\"" + toHex(b.stroke) + "\"></div><div class=\"row\"><label>Line size</label><input id=\"shW\" type=\"number\" min=\"0\" max=\"20\" value=\"" + (b.strokeWidth == null ? 2 : b.strokeWidth) + "\" style=\"width:64px\"></div><p class=\"hint\">Line size 0 hides the outline. No fill leaves only the outline.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
@@ -611,6 +659,7 @@ function renderInspector() {
     box.querySelector("#delCol").onclick = () => { if (b.rows[0].cells.length < 2) return; b.rows.forEach(row => row.cells.splice(c, 1)); b.colBg.splice(c, 1); tableSel.c = Math.max(0, c - 1); render(); autosave(); };
   }
   box.querySelector("#delBlock").onclick = () => { const p = currentPage(); p.blocks = p.blocks.filter(x => x.id !== b.id); selBlock = null; render(); autosave(); };
+  box.scrollIntoView({ block: "nearest" });
 }
 
 function blockName(b) {
