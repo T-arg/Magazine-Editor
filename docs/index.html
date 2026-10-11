@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Magazine Editor v0.2.7</title>
+<title>Magazine Editor v0.2.8</title>
 <style>
   :root { --bg:#fefefd; --panel:#f5f5f3; --ink:#333; --muted:#6b5f5e; --accent:#4a3b3a; --warn:#c0392b; }
   * { box-sizing: border-box; }
@@ -73,7 +73,7 @@
   <a class="site-logo" href="https://t-arg.github.io/" title="TEAM a.r.g." target="_blank" rel="noopener noreferrer">
     <img src="data:image/gif;base64,R0lGODlheQAuAMIFAEc8Okg8OUY9Nk5BPv7+/P///////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAB5AC4AAAP+eHrRHivKSau9OOudA/kf4HBkaZ5PCnEe6DrDKc/z0LpfEG83DqrAxo5GNNk+tkduiOklB74oTheswipJq5CSvSqOBHDux7T0WjCptKeO6iTJ9uu9EJMP4Dz0XKacpw8DXYFyhXR4bIUEh4lLLWINi1N9En9hUIBrSFoqmItfTlaeizF5aZJhjR6Cd2Yve6o4rDqoiks5iCBxakJkjze0m7qeHr24ri9twTlopLY/uDd2ysGRtbdiT2OLwILeOw5Tco2oy4q0VMLPzrqJ6T/h13MPCsU4AIMpAFL428/Fj/b5+KYJWhSBLkQY9BGpGKJp8v75wyGgokUBY6w16jL+ioy6dRPn2LDBgBtDkAbNwUshyF6qgSpcsCoHciY5ew0Y7Hp1aV01W+EAMgQyZwzEcc3cjMzZ0I1JnyF5WXspa+rNeCifDpUEQchUeMy+AopHzg0adw3fwTxqi61XkgA7ivjmDaEsb2jsUvu4UslBrFnL4uyapSqQjn3RIA7rV2HWTWJBkptLZQFAYFrWYL3KUi1Kv48jQua2AJ+xVEDm8tv8zLRZ0DAD6I3KSzOVFfVEnA3CjTNYoJFjvlZV9qRZESIipOhNFHDR38DHwp5H3J3T4TmVB+XNbHYOux4AeL+eODIB3Y3Q34uFfYKSKiuZPTe6mLkD9ETlM8YeP1P+e/foISebPOHMtBBXux2Wj3A92cfJfvKZx41ufsDHxnYQMsbJdvnpt6EVw4imYQWylShgdeLFlOCDCN6X4gMvarHPgwMKJiCJ8A1loYYf2lfeh5dlJqJ9OHKnY3M8inLEckkK1xyQto1QSYp03YddGsg5qANdg1xioJaBrJiWV1S0NF1f7kUyI2bBWRgJlwseKROceM35zSp7tMSNmebRU0lYjOkpHSFbFhfaY+OBIB6fR1ZSTGG3pTgojIvECOSlmLJ4Hj47LUGSZUFyqF+TsPAYJTVnUscgczsJYYef9Ty1HIMs1XlbGUFol6ujuxaJGwOmYQaJH6TAkA6DVQbN1YWuQIBaBbPNkvjErwzcBl1X9JiyCjN4GXpMmlbUE8ggzm65LIkvVBAsQ8Cet4K2jkDXxqe8unpuCqBIGUgd3iDzLQUC5BMDTnUIhAk+JT1aBXgVSlltdviKSwesGwwgEMIo/BABJOBo7O8n4Gb38AoRVzsErCpY8EQNXtTRchaUuLxEw0Hs0G3JeJgp8ZZF9HzCyjRHqx259VLs89E915rFyNUiMgI9uRqN9NQsoMxUNO8+jXXKaFDtNQl08VvKFoKI7XQpcJ79tQQJAAA7" alt="TEAM a.r.g.">
   </a>
-  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.7</span></h1>
+  <h1>Magazine Editor <span style="color:#6b5f5e;font-weight:500">v0.2.8</span></h1>
   <select id="pageKind">
     <option value="blank">Blank page</option>
     <option value="cover">Cover</option>
@@ -150,6 +150,7 @@
       <button id="btnImage" type="button">Image</button>
       <button id="btnTable" type="button">Table</button>
       <button id="btnShape" type="button">Shape</button>
+      <button id="btnIndexBlock" type="button">Index</button>
       <input id="fileImg" type="file" accept="image/*" hidden>
     </div>
     <h2>Selected block</h2>
@@ -195,7 +196,7 @@ function newPage(kind) {
     p.label = "Article";
     p.blocks.push(textBlock(8, 8, 84, 14, "Story title", 32, "#2b211f", true, "Georgia"));
     p.blocks.push(textBlock(8, 24, 84, 48, "Write the story here. Drag this block to move it, drag the corner to resize, and tick Index title if it should appear in the contents.", 15, "#333", false, "Segoe UI"));
-  } else if (kind === "index") { p.label = "Contents"; p.role = "index"; p.bg = "#fbf8f3"; p.blocks.push(textBlock(8, 8, 84, 10, "Contents", 36, "#2b211f", false, "Georgia")); const list = textBlock(8, 22, 84, 68, "", 16, "#333", false, "Segoe UI"); list.indexList = true; p.blocks.push(list); }
+  } else if (kind === "index") { p.label = "Contents"; p.role = "index"; p.bg = "#fbf8f3"; p.blocks.push(textBlock(8, 8, 84, 10, "Contents", 36, "#2b211f", false, "Georgia")); p.blocks.push(indexBlock()); }
   else p.label = "Page " + (mag.pages.length + 1);
   return p;
 }
@@ -205,6 +206,17 @@ function textBlock(x, y, w, h, text, size, color, index, font) {
 }
 function imageBlock(src) { return { id:id(), type:"image", x:10, y:10, w:40, h:30, src, fit:"cover", crop:{l:0,t:0,r:0,b:0}, radius:0, shadow:true }; }
 function shapeBlock() { return { id:id(), type:"shape", shape:"box", x:12, y:12, w:24, h:16, fill:"#f4d35e", stroke:"#4a3b3a", strokeWidth:2 }; }
+function indexBlock() { return { id:id(), type:"index", x:8, y:22, w:84, h:68, titleSize:16, numberSize:14, titleColor:"#333", numberColor:"#6b5f5e", numberPos:"after", font:"Segoe UI" }; }
+function indexRows(b) {
+  const entries = indexEntries();
+  if (!entries.length) return "<div class=\"hint\">Mark text blocks as Index title, then rebuild.</div>";
+  return entries.map(e => {
+    const num = "<span style=\"font-size:" + (b.numberSize || 14) + "px;color:" + (b.numberColor || "#6b5f5e") + ";font-weight:700\">" + String(e.page).padStart(2, "0") + "</span>";
+    const title = "<span style=\"font-size:" + (b.titleSize || 16) + "px;color:" + (b.titleColor || "#333") + "\">" + escapeHtml(e.title) + "</span>";
+    const gap = b.numberPos === "before" ? num + " " + title : title + " " + num;
+    return "<div style=\"display:flex;justify-content:" + (b.numberPos === "before" ? "flex-start" : "space-between") + ";align-items:baseline;gap:12px;line-height:1.45\">" + gap + "</div>";
+  }).join("");
+}
 function shapeSvg(b) {
   const sw = b.strokeWidth == null ? 2 : +b.strokeWidth;
   const fill = (b.noFill || b.fill === "none") ? "none" : (b.fill || "#f4d35e");
@@ -340,6 +352,12 @@ function renderBlock(b) {
     const c = b.crop || { l:0, t:0, r:0, b:0 };
     img.style.clipPath = "inset(" + (c.t||0) + "% " + (c.r||0) + "% " + (c.b||0) + "% " + (c.l||0) + "%)";
     el.appendChild(img);
+  } else if (b.type === "index") {
+    const holder = document.createElement("div");
+    holder.className = "txt";
+    holder.style.fontFamily = (b.font || "Segoe UI") + ", sans-serif";
+    holder.innerHTML = indexRows(b);
+    el.appendChild(holder);
   } else if (b.type === "shape") {
     const holder = document.createElement("div");
     holder.style.width = "100%"; holder.style.height = "100%";
@@ -474,6 +492,11 @@ function renderInspector() {
     box.querySelector("#fit").value = b.fit || "cover";
     const apply = () => { const sz2 = pageSize(); b.w = clamp(+box.querySelector("#mmW").value / sz2.w * 100, 4, 100); b.h = clamp(+box.querySelector("#mmH").value / sz2.h * 100, 3, 100); b.fit = box.querySelector("#fit").value; b.crop = { l:+box.querySelector("#cL").value, t:+box.querySelector("#cT").value, r:+box.querySelector("#cR").value, b:+box.querySelector("#cB").value }; snapBlock(b); renderSheet(); autosave(); };
     box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", apply));
+  } else if (b.type === "index") {
+    box.innerHTML = "<div class=\"row\"><label>Text size</label><input id=\"ixTs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.titleSize || 16) + "\"></div><div class=\"row\"><label>Number size</label><input id=\"ixNs\" type=\"number\" min=\"8\" max=\"72\" value=\"" + (b.numberSize || 14) + "\"></div><div class=\"row\"><label>Text color</label><input id=\"ixTc\" type=\"color\" value=\"" + toHex(b.titleColor) + "\"></div><div class=\"row\"><label>Number color</label><input id=\"ixNc\" type=\"color\" value=\"" + toHex(b.numberColor) + "\"></div><div class=\"row\"><label>Numbers</label><select id=\"ixPos\"><option value=\"after\">After text</option><option value=\"before\">Before text</option></select></div><p class=\"hint\">This block lists Index titles. Rebuild refreshes the list and keeps this layout.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
+    box.querySelector("#ixPos").value = b.numberPos || "after";
+    const applyIndex = () => { b.titleSize = +box.querySelector("#ixTs").value; b.numberSize = +box.querySelector("#ixNs").value; b.titleColor = box.querySelector("#ixTc").value; b.numberColor = box.querySelector("#ixNc").value; b.numberPos = box.querySelector("#ixPos").value; renderSheet(); autosave(); };
+    box.querySelectorAll("input,select").forEach(n => n.addEventListener("input", applyIndex));
   } else if (b.type === "shape") {
     box.innerHTML = "<div class=\"row\"><label>Shape</label><select id=\"shKind\"><option value=\"box\">Box</option><option value=\"circle\">Circle</option><option value=\"triangle\">Triangle</option><option value=\"arrow-right\">Arrow right</option><option value=\"arrow-left\">Arrow left</option><option value=\"arrow-up\">Arrow up</option><option value=\"arrow-down\">Arrow down</option></select></div><div class=\"row\"><label>Fill</label><input id=\"shFill\" type=\"color\" value=\"" + toHex(b.fill === "none" ? "#f4d35e" : b.fill) + "\"></div><div class=\"row\"><label></label><label class=\"hint\"><input id=\"shNone\" type=\"checkbox\"" + (b.noFill || b.fill === "none" ? " checked" : "") + "> no fill</label></div><div class=\"row\"><label>Line</label><input id=\"shStroke\" type=\"color\" value=\"" + toHex(b.stroke) + "\"></div><div class=\"row\"><label>Line size</label><input id=\"shW\" type=\"number\" min=\"0\" max=\"20\" value=\"" + (b.strokeWidth == null ? 2 : b.strokeWidth) + "\" style=\"width:64px\"></div><p class=\"hint\">Line size 0 hides the outline. No fill leaves only the outline.</p><div class=\"row\"><button id=\"delBlock\" type=\"button\" class=\"warn\">Delete block</button></div>";
     box.querySelector("#shKind").value = b.shape === "arrow" ? "arrow-right" : (b.shape || "box");
@@ -539,18 +562,14 @@ function indexEntries() {
 function rebuildIndex(announce) {
   let p = mag.pages.find(x => x.role === "index");
   if (!p) { p = newPage("index"); mag.pages.splice(Math.min(1, mag.pages.length), 0, p); }
-  const entries = indexEntries();
-  const lines = entries.map(e => e.title + "    " + String(e.page).padStart(2, "0")).join("\n") || "Mark text blocks as Index title, then rebuild.";
-  let list = (p.blocks || []).find(b => b.indexList);
-  if (!list) {
-    list = textBlock(8, 22, 84, 68, lines, 16, "#333", false, "Segoe UI");
-    list.indexList = true;
-    p.blocks.push(list);
-  } else {
-    list.text = lines;
-    list.html = String(lines).split("\n").join("<br>");
+  let block = (p.blocks || []).find(b => b.type === "index");
+  if (!block) {
+    const old = (p.blocks || []).find(b => b.indexList);
+    block = indexBlock();
+    if (old) { block.x = old.x; block.y = old.y; block.w = old.w; block.h = old.h; p.blocks = p.blocks.filter(b => b !== old); }
+    p.blocks.push(block);
   }
-  if (announce) setStatus("Index text updated. Layout kept.", true);
+  if (announce) setStatus("Index block updated. Layout kept.", true);
   render(); autosave();
 }
 
@@ -776,6 +795,30 @@ async function paintPage(p, pageIndex) {
   }
   for (const b of (p.blocks || [])) {
     const x = b.x / 100 * w, y = b.y / 100 * h, bw = b.w / 100 * w, bh = b.h / 100 * h;
+    if (b.type === "index") {
+      const entries = indexEntries();
+      const titleSize = Math.max(8, (b.titleSize || 16) * (w / 794));
+      const numberSize = Math.max(8, (b.numberSize || 14) * (w / 794));
+      const rowH = Math.max(titleSize, numberSize) * 1.45;
+      ctx.textBaseline = "top";
+      entries.forEach((e, i) => {
+        if (i * rowH > bh) return;
+        const yy = y + i * rowH;
+        const num = String(e.page).padStart(2, "0");
+        ctx.font = "700 " + numberSize + "px sans-serif";
+        const nw = ctx.measureText(num).width;
+        ctx.font = titleSize + "px sans-serif";
+        const tw = Math.min(ctx.measureText(e.title).width, bw - nw - 16);
+        if (b.numberPos === "before") {
+          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = "700 " + numberSize + "px sans-serif"; ctx.fillText(num, x, yy);
+          ctx.fillStyle = b.titleColor || "#333"; ctx.font = titleSize + "px sans-serif"; ctx.fillText(e.title, x + nw + 10, yy, bw - nw - 14);
+        } else {
+          ctx.fillStyle = b.titleColor || "#333"; ctx.font = titleSize + "px sans-serif"; ctx.fillText(e.title, x, yy, bw - nw - 14);
+          ctx.fillStyle = b.numberColor || "#6b5f5e"; ctx.font = "700 " + numberSize + "px sans-serif"; ctx.fillText(num, x + bw - nw, yy);
+        }
+      });
+      continue;
+    }
     if (b.type === "shape") {
       ctx.save();
       ctx.beginPath();
@@ -935,6 +978,7 @@ async function exportEpub() {
     const name = "page-" + String(i + 1).padStart(3, "0") + ".xhtml";
     const blocks = (p.blocks || []).map(b => {
       const style = "position:absolute;left:" + b.x + "%;top:" + b.y + "%;width:" + b.w + "%;height:" + b.h + "%;overflow:hidden;";
+      if (b.type === "index") return "<div style=\"" + style + "font-family:Segoe UI,sans-serif\">" + indexRows(b) + "</div>";
       if (b.type === "shape") return "<div style=\"" + style + "\">" + shapeSvg(b) + "</div>";
       if (b.type === "table") {
         const rows = (b.rows || []).map((row, ri) => "<tr>" + row.cells.map((cell, ci) => "<td style=\"border:" + (b.borderWidth || 1) + "px solid " + (b.border || "#4a3b3a") + ";background:" + cellBg(b, ri, ci) + ";padding:4px;vertical-align:top\">" + xhtmlEscape(cell.text || "") + "</td>").join("") + "</tr>").join("");
@@ -992,6 +1036,7 @@ document.getElementById("btnText").onclick = () => { const p = currentPage(); if
 document.getElementById("btnTitle").onclick = () => { const p = currentPage(); if (!p) return; const b = textBlock(8, 8, 84, 12, "Title", 34, "#2b211f", true, "Georgia"); p.blocks.push(b); selBlock = b.id; render(); autosave(); };
 document.getElementById("btnTable").onclick = () => { const p = currentPage(); if (!p) return; const b = tableBlock(); snapBlock(b); p.blocks.push(b); selBlock = b.id; tableSel = { r:0, c:0 }; render(); autosave(); };
 document.getElementById("btnShape").onclick = () => { const p = currentPage(); if (!p) return; const b = shapeBlock(); snapBlock(b); p.blocks.push(b); selBlock = b.id; render(); autosave(); };
+document.getElementById("btnIndexBlock").onclick = () => { const p = currentPage(); if (!p) return; const b = indexBlock(); snapBlock(b); p.blocks.push(b); selBlock = b.id; render(); autosave(); };
 document.getElementById("btnImage").onclick = () => document.getElementById("fileImg").click();
 document.getElementById("fileImg").onchange = async e => { const file = e.target.files[0]; e.target.value = ""; if (!file) return; const p = currentPage(); if (!p) return; setStatus("Importing image..."); const src = await compressImage(file); const b = imageBlock(src); p.blocks.push(b); selBlock = b.id; render(); autosave(); setStatus("Image added. Trim with the sliders.", true); };
 
